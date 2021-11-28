@@ -15,4 +15,24 @@ public class BoardModel {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "boardModel")
     private List<ElementModel> elementModelList;
 
+    public BoardModel(Long id, String boardName, List<ElementModel> elementModelList) {
+        this.id = id;
+        this.boardName = boardName;
+        this.elementModelList = elementModelList;
+    }
+
+    public BoardModel() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getBoardName() {
+        return boardName;
+    }
+
+    public List<ElementModel> getElementModelList() {
+        return elementModelList;
+    }
 }
