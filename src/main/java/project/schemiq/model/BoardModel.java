@@ -21,6 +21,7 @@ public class BoardModel {
         this.elementModelList = elementModelList;
     }
 
+
     public BoardModel() {
     }
 
