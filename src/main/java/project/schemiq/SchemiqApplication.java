@@ -9,5 +9,4 @@ public class SchemiqApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SchemiqApplication.class, args);
 	}
-
 }
