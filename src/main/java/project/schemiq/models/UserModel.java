@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package project.schemiq.models;
 
 import javax.persistence.*;
@@ -82,4 +83,7 @@ public class UserModel {
     public void setAddDate(Date addDate) {
         this.addDate = addDate;
     }
+=======
+package project.schemiq.models;public class UserModel {
+>>>>>>> origin/master
 }
