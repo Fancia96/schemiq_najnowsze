@@ -20,6 +20,14 @@ public class ElementModel {
         this.description = description;
         this.elementStatus = elementStatus;
     }
+
+    public ElementModel(Long id, String name, String description, ElementStatus elementStatus, BoardModel boardModel) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.elementStatus = elementStatus;
+        this.boardModel = boardModel;
+    }
 //x
 
     public ElementModel() {

@@ -22,6 +22,7 @@ public class UserModel {
     private Set<BoardModel> boardModel;
 
 
+
     //x
 
     public UserModel(Long id, String email, String firstName, String lastName, String name, String password) {
