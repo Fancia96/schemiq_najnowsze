@@ -61,10 +61,34 @@
 
 
     <div id="left_panel" >
-      <b-jumbotron header="BootstrapVue" lead="Bootstrap v4 Components for Vue.js 2">
-        <p>For more information visit website</p>
-        <b-button variant="primary" href="#">More Info</b-button>
-      </b-jumbotron>
+<!--      <b-container fluid>-->
+<!--        <b-row >-->
+<!--          <b-col md="4" class="py-4">-->
+<!--            <b-button id="button-1" variant="outline-success">Live chat</b-button>-->
+<!--          </b-col>-->
+<!--        </b-row>-->
+<!--        <b-row>-->
+<!--          <b-col md="4" class="py-4">-->
+<!--            <b-button id="button-2" variant="outline-success">Html chat</b-button>-->
+<!--          </b-col>-->
+<!--        </b-row>-->
+<!--        <b-row>-->
+<!--          <b-col md="4" class="py-4">-->
+<!--            <b-button ref="button-3" variant="outline-success">Alternative chat</b-button>-->
+<!--          </b-col>-->
+<!--        </b-row>-->
+
+<!--        &lt;!&ndash; Tooltip title specified via prop title &ndash;&gt;-->
+<!--        <b-tooltip target="button-1" title="Online!"></b-tooltip>-->
+
+<!--        &lt;!&ndash; HTML title specified via default slot &ndash;&gt;-->
+<!--        <b-tooltip target="button-2" placement="bottom">-->
+<!--          Hello <strong>World!</strong>-->
+<!--        </b-tooltip>-->
+
+<!--        &lt;!&ndash; Tooltip for an element identified by ref &ndash;&gt;-->
+<!--        <b-tooltip :target="() => $refs['button-3']" title="Alternative!"></b-tooltip>-->
+<!--      </b-container>-->
     </div>
 
       <div id="tabs">
@@ -75,6 +99,16 @@
             <div id="boards">
 
               <p>I'm the first tab here</p>
+
+<!--              name="LeaveType" @change="onChange($event)" class="form-control" v-model="key">-->
+
+              <select @change="getElements(board.id)" {{board.boardName}}>
+                <option v-for="board in boards" :key="board.id">
+                  <!--        v-on:click-->
+<!--                   @click="getElements(board.id)"> {{board.boardName}} </p>-->
+                </option>
+
+              </select>
 
               <ol>
                 <li v-for="board in boards" :key="board.id">
@@ -92,6 +126,36 @@
             <div id="friends">
               <p>I'm the second tab</p>
 
+              <p>Using stand-alone:<p/>
+              <div class="mb-4">
+                <b-avatar></b-avatar>
+                <b-avatar variant="primary" text="BV"></b-avatar>
+                <b-avatar variant="info" src="https://placekitten.com/300/300"></b-avatar>
+                <b-avatar variant="success" icon="people-fill"></b-avatar>
+              </div>
+              <p>Using in components (list group) example:<p/>
+              <b-list-group style="max-width: 300px;">
+                <b-list-group-item class="d-flex align-items-center">
+                  <b-avatar class="mr-3"></b-avatar>
+                  <span class="mr-auto">J. Circlehead</span>
+                  <b-badge>5</b-badge>
+                </b-list-group-item>
+                <b-list-group-item class="d-flex align-items-center">
+                  <b-avatar variant="primary" text="BV" class="mr-3"></b-avatar>
+                  <span class="mr-auto">BootstrapVue</span>
+                  <b-badge>12</b-badge>
+                </b-list-group-item>
+                <b-list-group-item class="d-flex align-items-center">
+                  <b-avatar variant="info" src="https://placekitten.com/300/300" class="mr-3"></b-avatar>
+                  <span class="mr-auto">Super Kitty</span>
+                  <b-badge>9</b-badge>
+                </b-list-group-item>
+                <b-list-group-item class="d-flex align-items-center">
+                  <b-avatar variant="success" icon="people-fill" class="mr-3"></b-avatar>
+                  <span class="mr-auto">ACME group</span>
+                  <b-badge>7</b-badge>
+                </b-list-group-item>
+              </b-list-group>
 
             </div>
 
@@ -192,18 +256,29 @@ export default {
 #tabs{
   background-color: crimson;
 
-  /*position: relative;*/
-  top: 100px;
-  left: 0px;
+
+  height: 100vh;
+  width: 100vw;
+
   /*width: 90%;*/
 
 }
 
+#friends,boards{
+  height: 100vh;
+  width: 100vw;
+}
+
 #left_panel{
+  visibility: visible;
+
  /*float: left;*/
  /* position: absolute;*/
   top: 100px;
   left: 0px;
+
+  background-color: rgb(102,102,102);
+
   /*width: 10%;*/
 }
 
@@ -231,13 +306,21 @@ export default {
 }
 
 #tab_class{
-  background-color: aqua;
+  background-color: #d488a1;
 }
 
+#tabs{
+  color: black;
+}
 
 
 #tabs,b-tab{
   background-color: forestgreen;
+
+}
+
+#tabs,b-tabs{
+  background-color: #f2cfc3;
 }
 
 </style>
