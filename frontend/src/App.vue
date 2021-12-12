@@ -105,7 +105,7 @@
               <select @change="getElements(board.id)" {{board.boardName}}>
                 <option v-for="board in boards" :key="board.id">
                   <!--        v-on:click-->
-<!--                   @click="getElements(board.id)"> {{board.boardName}} </p>-->
+<!--                   @click="getElements(board.id)"> {{board.boardName}} </pd>-->
                 </option>
 
               </select>
