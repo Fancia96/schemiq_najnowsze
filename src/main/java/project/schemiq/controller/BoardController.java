@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import project.schemiq.Service.BoardService;
 import project.schemiq.Service.ElementService;
+import project.schemiq.Service.UserService;
 import project.schemiq.model.BoardModel;
 import project.schemiq.model.UserModel;
 
@@ -17,8 +18,12 @@ public class BoardController {
 
     private final BoardService boardService;
 
-    public BoardController(BoardService boardService){
+    private final UserService userService;
+
+    public BoardController(BoardService boardService, UserService userService){
+
         this.boardService = boardService;
+        this.userService = userService;
     }
 
     @PostMapping("/createBoard")
@@ -36,6 +41,21 @@ public class BoardController {
         BoardModel  createThisBoard2 = boardService.createBoard(
                 new BoardModel(2l,
                         "tablica druga" ));
+
+        userService.createBoardModelHavingUser(userService.findUserByID(1l), createThisBoard1);
+
+        return ResponseEntity.ok("i added test boards :D");
+
+    }
+
+    @PostMapping("/addCustomDataBoardsConenction")
+    public ResponseEntity<String> addCustomDataBoardsConenction() throws Exception{
+
+        BoardModel  createThisBoard2 = boardService.createBoard(
+                new BoardModel(4l,
+                        "tablica tralalala" ));
+
+        userService.createBoardModelHavingUser(userService.findUserByID(2l), createThisBoard2);
 
         return ResponseEntity.ok("i added test boards :D");
 

@@ -5,9 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import project.schemiq.Service.UserService;
+import project.schemiq.model.BoardModel;
 import project.schemiq.model.UserModel;
 
 import java.util.List;
+import java.util.Set;
 
 @CrossOrigin
 @Controller
@@ -24,6 +26,13 @@ public class UserController {
         return ResponseEntity.ok("ok :D");
 
     }
+
+    @GetMapping("/getUsersBoards/{ID}")
+    public ResponseEntity<Set<BoardModel>> getUsersBoards(@PathVariable Long ID){
+        return ResponseEntity.ok(userService.getUsersBoards(userService.findUserByID(ID)));
+
+    }
+
 
     @PostMapping("/addCustomDataUsers")
     public ResponseEntity<String> addCustomDataUsers() throws Exception{

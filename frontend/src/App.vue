@@ -61,34 +61,34 @@
 
 
     <div id="left_panel" >
-<!--      <b-container fluid>-->
-<!--        <b-row >-->
-<!--          <b-col md="4" class="py-4">-->
-<!--            <b-button id="button-1" variant="outline-success">Live chat</b-button>-->
-<!--          </b-col>-->
-<!--        </b-row>-->
-<!--        <b-row>-->
-<!--          <b-col md="4" class="py-4">-->
-<!--            <b-button id="button-2" variant="outline-success">Html chat</b-button>-->
-<!--          </b-col>-->
-<!--        </b-row>-->
-<!--        <b-row>-->
-<!--          <b-col md="4" class="py-4">-->
-<!--            <b-button ref="button-3" variant="outline-success">Alternative chat</b-button>-->
-<!--          </b-col>-->
-<!--        </b-row>-->
+      <b-container fluid>
+        <b-row >
+          <b-col md="4" class="py-4">
+            <b-button id="button-1" variant="outline-success">Live chat</b-button>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col md="4" class="py-4">
+            <b-button id="button-2" variant="outline-success">Html chat</b-button>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col md="4" class="py-4">
+            <b-button ref="button-3" variant="outline-success">Alternative chat</b-button>
+          </b-col>
+        </b-row>
 
-<!--        &lt;!&ndash; Tooltip title specified via prop title &ndash;&gt;-->
-<!--        <b-tooltip target="button-1" title="Online!"></b-tooltip>-->
+        <!-- Tooltip title specified via prop title -->
+        <b-tooltip target="button-1" title="Online!"></b-tooltip>
 
-<!--        &lt;!&ndash; HTML title specified via default slot &ndash;&gt;-->
-<!--        <b-tooltip target="button-2" placement="bottom">-->
-<!--          Hello <strong>World!</strong>-->
-<!--        </b-tooltip>-->
+        <!-- HTML title specified via default slot -->
+        <b-tooltip target="button-2" placement="bottom">
+          Hello <strong>World!</strong>
+        </b-tooltip>
 
-<!--        &lt;!&ndash; Tooltip for an element identified by ref &ndash;&gt;-->
-<!--        <b-tooltip :target="() => $refs['button-3']" title="Alternative!"></b-tooltip>-->
-<!--      </b-container>-->
+        <!-- Tooltip for an element identified by ref -->
+        <b-tooltip :target="() => $refs['button-3']" title="Alternative!"></b-tooltip>
+      </b-container>
     </div>
 
       <div id="tabs">
@@ -102,20 +102,34 @@
 
 <!--              name="LeaveType" @change="onChange($event)" class="form-control" v-model="key">-->
 
-              <select @change="getElements(board.id)" {{board.boardName}}>
-                <option v-for="board in boards" :key="board.id">
-                  <!--        v-on:click-->
-<!--                   @click="getElements(board.id)"> {{board.boardName}} </pd>-->
-                </option>
 
-              </select>
+             <b-form-select v-model="selected" class="mb-3" @change="getElements(selected)" >
+                <b-form-select-option v-for="board in boards" :key="board.id" :value="board.id" >
+                   {{board.boardName}}
+                </b-form-select-option>
 
-              <ol>
-                <li v-for="board in boards" :key="board.id">
-                  <!--        v-on:click-->
-                  <a href="#" @click="getElements(board.id)"> {{board.boardName}} </a>
-                </li>
-              </ol>
+              </b-form-select>
+
+
+<!--              <select class="form-control" @click="getElements(board.id)">-->
+<!--                <option value="" selected disabled> Choose</option>-->
+<!--                <option v-for="board in boards" :value="board.name" :key="board.id">{{board.boardName }}</option>-->
+<!--              </select>-->
+
+
+<!--              <select @click="changeItem(board.id)">-->
+<!--                <option v-for="board in boards" :key="board.id">{{board.boardName}}</option>-->
+<!--              </select>-->
+
+
+
+
+<!--              <ol>-->
+<!--                <li v-for="board in boards" :key="board.id">-->
+<!--                  &lt;!&ndash;        v-on:click&ndash;&gt;-->
+<!--                  <a href="#" @click="getElements(board.id)"> {{board.boardName}} </a>-->
+<!--                </li>-->
+<!--              </ol>-->
 
 
               <b-table :fields="['name', 'description', 'element_status']" :items="elements"></b-table>
@@ -199,13 +213,21 @@ export default {
       // elements: [{name: "zadamie 1"},{name: "zadanie 2"}],
       elements: [],
 
-      user: {id: 1,name: "wanda"}
+      user: {id: 1,name: "wanda"},
+
+      selected: null
 
 
     }
   },
   methods: {
       getElements(boardId) {
+        fetch(`http://localhost:8081/findBoardElementsByBoardID/${boardId}`)
+            .then( response =>  response.json())
+            .then( elementsFromServerJson => { this.elements = elementsFromServerJson;}).catch(exception => console.error(exception));
+      },
+
+      changeItem(boardId) {
         fetch(`http://localhost:8081/findBoardElementsByBoardID/${boardId}`)
             .then( response =>  response.json())
             .then( elementsFromServerJson => { this.elements = elementsFromServerJson;}).catch(exception => console.error(exception));

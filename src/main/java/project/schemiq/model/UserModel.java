@@ -18,6 +18,7 @@ public class UserModel {
     private String name;
     private String password;
 
+
     @ManyToMany
     private Set<BoardModel> boardModel;
 
@@ -60,4 +61,15 @@ public class UserModel {
     public String getPassword() {
         return password;
     }
+
+    public Set<BoardModel> getBoardModel() {
+        return boardModel;
+    }
+
+    public void setBoardModel(Set<BoardModel> boardModel) {
+        this.boardModel = boardModel;
+    }
+
+
+
 }
