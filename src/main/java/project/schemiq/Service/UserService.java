@@ -72,6 +72,18 @@ public class UserService {
         }
     }
 
+    public UserModel findUserByEmailAndPassword(UserModel userModelFind){
+        Optional<UserModel> user = userRepository.findUserByEmail(userModelFind.getEmail());
+        if(user.isPresent()){
+
+            UserModel foundUser = user.get();
+            if(userModelFind.getPassword().equals(foundUser.getPassword())){
+                return foundUser;
+            }
+        }
+        throw new ObjectNotFoundException(UserService.class, SchemiqApplication.userNotFound);
+    }
+
     public UserModel findUserByName(UserModel userModelFind){
         Optional<UserModel> user = userRepository.findUserByName(userModelFind.getName());
         if(user.isPresent()){

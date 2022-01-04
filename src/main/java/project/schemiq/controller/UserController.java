@@ -75,6 +75,12 @@ public class UserController {
         return ResponseEntity.ok(userService.findUserByName(userModel));
     }
 
+
+    @PostMapping("/findUserByEmailAndPassword")
+    public ResponseEntity<UserModel> findUserByEmailAndPassword(@RequestBody UserModel userModel){
+        return ResponseEntity.ok(userService.findUserByEmailAndPassword(userModel));
+    }
+
     @GetMapping("/findUserByID/{ID}")
     public ResponseEntity<UserModel> findPersonByID(@PathVariable Long ID){
         return ResponseEntity.ok(userService.findUserByID(ID));

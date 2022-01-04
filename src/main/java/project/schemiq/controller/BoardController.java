@@ -72,6 +72,11 @@ public class BoardController {
         return ResponseEntity.ok(boardService.findBoardByID(ID));
     }
 
+    @GetMapping("/findBoardrByUserID/{ID}")
+    public ResponseEntity<BoardModel> findBoardByUserID(@PathVariable Long ID){
+        return ResponseEntity.ok(boardService.findBoardByUserID(ID));
+    }
+
     @GetMapping("/getAllExistingBoards")
     public ResponseEntity<List<BoardModel>> getEverything() {
         return ResponseEntity.ok(boardService.getEverything());
