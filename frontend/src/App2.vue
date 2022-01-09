@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="d-flex">
-      <div style="width: 240px; height: 100vh">
+      <div style="min-width: 240px; width: 240px; height: 100vh">
         <div class="bg-light text-dark" style="position: relative; width: 100%; height: 100%;">
           <b-link>
             <b-img src="./assets/schemiq.png"  fluid class="p-3"/>
@@ -10,7 +10,7 @@
           <b-list-group>
             <b-list-group-item :to="'/dashboard'" :disabled="!$root.user"><b-icon-folder></b-icon-folder> Boards</b-list-group-item>
             <b-list-group-item :to="'/friends'" :disabled="!$root.user"><b-icon-diamond></b-icon-diamond> Friends</b-list-group-item>
-            <b-list-group-item :to="'/settings'" disabled=true ><b-icon-nut></b-icon-nut> Settings</b-list-group-item>
+            <b-list-group-item :to="'/settings'" :disabled="true" ><b-icon-nut></b-icon-nut> Settings</b-list-group-item>
           </b-list-group>
         </div>
       </div>

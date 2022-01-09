@@ -33,6 +33,7 @@ public class BoardService {
         Optional<UserModel> user = userRepository.findById(userID);
         if(user.isPresent()){
             UserModel userModel = user.get();
+            boardModel.setOwner(userModel);
             boardRepository.save(boardModel);
             userModel.getBoardModel().add(boardModel);
             userRepository.save(userModel);
@@ -103,7 +104,8 @@ public class BoardService {
 
     public void deleteBoardByID(Long boardID){
         Optional<BoardModel> board = boardRepository.findById(boardID);
-        if(board.isPresent()){
+
+        if(board.isPresent()) {
             BoardModel existingBoard = board.get();
 
             for(ElementModel element : existingBoard.getElementModelList()){

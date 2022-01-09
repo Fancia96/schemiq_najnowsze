@@ -19,30 +19,36 @@
       </div>
     </div>
     <b-modal ref="friendModal" hide-footer :title="edit.friend.name">
-
-      <b-list-group>
+      <b-list-group ref="chatbox" style="max-height: 50vh; overflow-y: auto;">
         <b-list-group-item v-for="(message, idx) in messages" :key="idx">
           <div class="d-flex align-items-center justify-content-between">
             <small class="text-muted">{{message[0]}}</small>
             <small class="text-muted">{{message[2]}}</small>
           </div>
-          <span>{{message[1]}}</span>
+          <div style="overflow: hidden; text-wrap: normal; word-break: break-all">{{message[1]}}</div>
         </b-list-group-item>
       </b-list-group>
       <b-form @submit="sendMessage(edit.friend.id)">
-        <b-form-group>
-          <b-form-input
-              v-model="edit.friend.message"
-              type="text"
-              placeholder="Enter message"
-              required
-          ></b-form-input>
-          <b-input-group-append>
-            <b-btn variant="outline-primary" type="submit">
-              <b-icon-arrow-right-circle />
-            </b-btn>
-          </b-input-group-append>
-        </b-form-group>
+        <div class="row">
+          <div class="col-10">
+            <b-form-group>
+              <b-form-input
+                  v-model="edit.friend.message"
+                  type="text"
+                  minlength="1"
+                  maxlength="100"
+                  placeholder="Enter message"
+                  required
+              ></b-form-input>
+            </b-form-group>
+          </div>
+          <div class="col-2">
+              <b-btn variant="outline-primary" type="submit">
+                <b-icon-arrow-right-circle />
+              </b-btn>
+          </div>
+        </div>
+
       </b-form>
       <div class="d-flex justify-content-center mt-3">
         <b-button v-if="edit.friend.id" variant="danger" style="margin-right: 1em;" @click="deleteFriend(edit.friend)">
@@ -54,8 +60,9 @@
     </b-modal>
 
     <b-modal ref="friendAddOptionModal" hide-footer title="Choose option to add a friend">
-      <div class="d-flex justify-content-center">
+      <div class="d-flex justify-content-evenly align-items-center">
         <b-btn type="primary" @click="openAddFriendByID()"><b-icon-plus></b-icon-plus> Add friend by ID</b-btn>
+        <b-btn type="primary" @click="openAddFriendBySearch()"><b-icon-plus></b-icon-plus> Search friends</b-btn>
       </div>
     </b-modal>
 
@@ -139,6 +146,9 @@ export default {
           .then( messages => {
             this.messages = messages;
             this.$refs.friendModal.show();
+            this.$root.$once('bv::modal::shown', () => {
+              this.$refs.chatbox.scrollTop = this.$refs.chatbox.scrollHeight;
+            })
           })
           .catch(exception => console.error(exception));
     },

@@ -98,13 +98,18 @@ export default {
       //alert(JSON.stringify(this.form))
 
       fetch(`http://localhost:8081/createUser`, {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(this.form) // body data type must match "Content-Type" header
       }).then( response =>  response.json())
           .then( user => {
+            if (user.error) {
+              alert('User could not be created');
+              return;
+            }
+
             localStorage.setItem('user', JSON.stringify(user))
             this.$root.user = user;
 

@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div id="boards" class="my-5 py-3">
+    <div id="boards" class="mt-5 py-3">
       <div class="board d-flex justify-content-center align-items-center">
         <b-btn type="primary" @click="openBoard(template.board)"><b-icon-plus></b-icon-plus> Add board</b-btn>
       </div>
-      <b-card v-for="board in boards" :key="`${board.id}-${board.boardName}`" class="board">
+      <b-card v-for="board in boards" :key="`${board.id}-${board.boardName}`" class="board mx-2">
         <b-card-title>
           <b-link @click="openBoard(board)">{{board.boardName || 'Untitled'}}</b-link>
         </b-card-title>
@@ -14,6 +14,7 @@
               :key="`element-${element.id}`"
               href="#"
               @click="openElement(element, board)"
+              class="my-2"
           >
             <div class="text-start">
               {{element.name}}
@@ -187,12 +188,17 @@
 <style scoped>
   #boards {
     width: 100%;
-    overflow-x: scroll;
     display: flex;
     flex-wrap: nowrap;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: auto;
   }
   .board {
+    min-width: 25%;
     width: 25%;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
   }
 </style>
 <script>
