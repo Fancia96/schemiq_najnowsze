@@ -3,6 +3,7 @@ package project.schemiq.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity(name = "element")
 public class ElementModel {
@@ -18,21 +19,45 @@ public class ElementModel {
     @JsonIgnore
     private BoardModel boardModel;
 
-    public ElementModel(Long id, String name, String description, ElementStatus elementStatus) {
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date addChangeTime;
+
+    private Long userChangeId;
+
+    public ElementModel(Long id, String name, String description, ElementStatus elementStatus, Long userChangeId) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.elementStatus = elementStatus;
+        this.addChangeTime = new Date() ;
+        this.userChangeId = userChangeId;
     }
 
-    public ElementModel(Long id, String name, String description, ElementStatus elementStatus, BoardModel boardModel) {
+    public ElementModel(Long id, String name, String description, ElementStatus elementStatus, BoardModel boardModel, Long userChangeId) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.elementStatus = elementStatus;
         this.boardModel = boardModel;
+        this.userChangeId = userChangeId;
     }
 //x
+
+    public Date getAddChangeTime() {
+        return addChangeTime;
+    }
+
+    public void setAddChangeTime(Date addChangeTime) {
+        this.addChangeTime = addChangeTime;
+    }
+
+    public Long getUserChangeId() {
+        return userChangeId;
+    }
+
+    public void setUserChangeId(Long userChangeId) {
+        this.userChangeId = userChangeId;
+    }
 
     public ElementModel() {
     }

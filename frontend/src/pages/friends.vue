@@ -29,7 +29,7 @@
           <span>{{message[1]}}</span>
         </b-list-group-item>
       </b-list-group>
-      <b-form @submit="sendMessage">
+      <b-form @submit="sendMessage(edit.friend.id)">
         <b-form-group>
           <b-form-input
               v-model="edit.friend.message"
@@ -192,6 +192,24 @@ export default {
 
     addFriend(addFriendByID){
       alert(addFriendByID);
+
+      fetch(`http://localhost:8081/addFriendshipBetweenIDs/${this.$root.user.id}/${addFriendByID}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        //body: JSON.stringify({msg: this.edit.friend.message})
+      }).then( friendship => {
+        if(friendship){
+          alert('Friend added')
+          this.$router.replace('/friends');
+
+        }
+        else{
+          alert('User is not existing')
+        }
+
+      });
 
     },
   },

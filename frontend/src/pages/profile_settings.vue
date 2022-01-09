@@ -77,24 +77,26 @@
 
     </b-form>
 
-    <b-button v-b-modal.modal-footer-sm>I want to delete my account</b-button>
+<!--    <b-button v-b-modal.modal-footer-sm >I want to delete my account</b-button>-->
 
-    <b-modal id="modal-footer-sm" title="BootstrapVue" button-size="sm">
-      <p class="my-2">Are you sure you want to delete your account?</p>
-      <b-form-group id="input-group-5" label="Your password:" label-for="input-5">
-        <b-form-input
-            id="input-5"
-            v-model="form.password"
-            placeholder="Enter password"
-            type="password"
-            required
-        ></b-form-input>
-      </b-form-group>
-    </b-modal>
+<!--    <b-modal id="modal-footer-sm" title="BootstrapVue" button-size="sm">-->
+<!--      <p class="my-2">Are you sure you want to delete your account?</p>-->
+<!--      <b-form-group id="input-group-5" label="Your password:" label-for="input-5">-->
+<!--        <b-form-input-->
+<!--            id="input-5"-->
+<!--            v-model="form.password"-->
+<!--            placeholder="Enter password"-->
+<!--            type="password"-->
+<!--            required-->
+<!--        ></b-form-input>-->
+<!--      </b-form-group>-->
+<!--    </b-modal>-->
 
-    <b-list-group-item @click="deleteUser()" href="#">
-      <b-icon-plus></b-icon-plus> Delete account
-    </b-list-group-item>
+    <div>
+      <b-list-group-item @click="deleteUser()" href="#">
+        <b-icon-></b-icon-> Delete account
+      </b-list-group-item>
+    </div>
 
   </div>
 </template>

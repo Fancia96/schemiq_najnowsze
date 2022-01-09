@@ -26,6 +26,13 @@
               }">{{element.elementStatus}}</small>
               <hr class="mt-0 mb-1"/>
               <small class="text-muted">{{element.description}}</small>
+              <hr class="mt-0 mb-1"/>
+              <small class="text-muted">
+<!--                <b-avatar variant="primary" class="mr-3" :text="(findUserById({{element.userChangeId}}) || '').charAt(0).toUpperCase()"></b-avatar>-->
+                <span>{{element.userChangeId}}</span>
+
+              </small>
+
             </div>
           </b-list-group-item>
           <b-list-group-item @click="addElement(board)" href="#">
@@ -158,7 +165,8 @@ export default {
           name: '',
           status: 'NEW',
           description: '',
-          board: 0
+          board: 0,
+          userChangeId: 0
         },
         board: {
           id: 0,
@@ -201,7 +209,7 @@ export default {
     },
     saveElement(element) {
       let board = this.boards.find(b => element.board === b.id);
-      fetch(element.id ? `http://localhost:8081/updateElement/${element.id}` : `http://localhost:8081/createElement/${board.id}`, {
+      fetch(element.id ? `http://localhost:8081/updateElement/${element.id}/${this.$root.user.id}` : `http://localhost:8081/createElement/${board.id}/${this.$root.user.id}`, {
         method: element.id ? 'PUT' : 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -250,6 +258,15 @@ export default {
             this.closeBoard();
           })
     }
+    // findUserById(userID) {
+    //
+    //   fetch(`http://localhost:8081/findUserByID/${userID}`)
+    //       .then( response =>  response.json())
+    //       .then( userFromServerJson => {
+    //         this.form=userFromServerJson;
+    //       }).catch(exception => console.error(exception));
+    //
+    // }
   },
   mounted(){
     fetch(`http://localhost:8081/findBoardsByUserID/${this.$root.user.id}`)

@@ -60,16 +60,16 @@ public class ElementController {
         return ResponseEntity.ok(elementService.getEverything());
     }
 
-    @PutMapping("/updateElement/{elementID}")
-    public ResponseEntity<ElementModel> findPersonByID(@RequestBody ElementModel element, @PathVariable Long elementID){
-        ElementModel  editThisPerson = elementService.updateElementByElementModel(element, elementID);
+    @PutMapping("/updateElement/{elementID}/{userID}")
+    public ResponseEntity<ElementModel> updateElementByElementModel(@RequestBody ElementModel element, @PathVariable Long elementID, @PathVariable Long userID){
+        ElementModel  editThisPerson = elementService.updateElementByElementModel(element, elementID, userID);
 
         return ResponseEntity.ok(editThisPerson);
     }
 
-    @PostMapping("/createElement/{boardID}")
-    public ResponseEntity<ElementModel> createElement(@RequestBody ElementModel element, @PathVariable Long boardID){
-        ElementModel  editThisPerson = elementService.createElement(element, boardID);
+    @PostMapping("/createElement/{boardID}/{userID}")
+    public ResponseEntity<ElementModel> createElement(@RequestBody ElementModel element, @PathVariable Long boardID, @PathVariable Long userID){
+        ElementModel  editThisPerson = elementService.createElement(element, boardID, userID);
 
         return ResponseEntity.ok(editThisPerson);
     }
