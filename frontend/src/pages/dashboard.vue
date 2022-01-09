@@ -105,6 +105,26 @@
             ></b-form-input>
           </b-form-group>
 
+          <div>
+          <b-form-group
+              label="People assigned to board"
+              label-for="board-people"
+          >
+            <div>
+                <b-list-group>
+                  <b-list-group-item class="d-flex align-items-center justify-content-between" v-for="user in boardUsers" :key="user.id">
+                    <b-avatar variant="primary" class="mr-3" :text="(user.name || '').charAt(0).toUpperCase()"></b-avatar>
+                    <span>{{user.name}}</span>
+                    <b-button variant="danger" :disabled="$root.user.id === user.id" @click="deleteUserFromBoard(edit.board.id, user.id)" ><b-icon-trash /></b-button>
+                  </b-list-group-item>
+                </b-list-group>
+            </div>
+            <div class="d-flex justify-content-center mt-3">
+              <b-button type="submit" variant="primary" @click="openAddUserToBoardByID()" ><b-icon-plus /> Add more people</b-button>
+            </div>
+          </b-form-group>
+          </div>
+
 <!--          <b-list-group>-->
 <!--            <b-list-group-item-->
 <!--                v-for="friend in board.elementModelList"-->
@@ -139,6 +159,29 @@
           </div>
         </b-form>
     </b-modal>
+
+    <b-modal ref="userAddToBoardByIDModal" hide-footer title="Adding new user by ID to the board">
+      <b-form @submit="addUserToABoard(addThisUserIDToBoard, edit.board.id)">
+        <b-form-group
+            id="input-group-1"
+            label="Put ID of other user:"
+            label-for="input-1"
+            description="Ask your friend for his ID!"
+        >
+          <b-form-input
+              id="input-1"
+              v-model="addThisUserIDToBoard"
+              type="text"
+              placeholder="Enter user ID"
+              required
+          ></b-form-input>
+        </b-form-group>
+        <div class="d-flex justify-content-center mt-3">
+          <b-button type="submit" variant="primary" ><b-icon-check /> Add this user to the board</b-button>
+        </div>
+      </b-form>
+    </b-modal>
+
   </div>
 </template>
 <style scoped>
@@ -157,6 +200,8 @@ export default {
   name: "dashboard",
   data() {
     return {
+      addThisUserIDToBoard: 0,
+      boardUsers: [],
       boards: [],
       selectedBoard: {},
       template: {
@@ -183,6 +228,9 @@ export default {
   methods: {
     openBoard(board) {
       this.edit.board = {...board};
+
+     this.findUsersOfABoard(board.id);
+
       this.$refs.boardModal.show();
     },
     deleteElement(element) {
@@ -203,6 +251,36 @@ export default {
     },
     closeBoard() {
       this.$refs.boardModal.hide();
+    },
+    openAddUserToBoardByID() {
+      this.$refs.userAddToBoardByIDModal.show();
+    },
+    closeAddUserToBoardByID() {
+      this.$refs.userAddToBoardByIDModal.hide();
+    },
+    deleteUserFromBoard(boardID, userID) {
+
+      if (!confirm('Are you sure you want to delete this user?')) {
+        return;
+      }
+
+      if(userID == this.$root.user.id){
+        alert('Can\'t delete yourself!');
+        return;
+      }
+      // delete user
+
+      fetch(`http://localhost:8081/deleteUserFromBoard/${boardID}/${userID}`, {
+        method: 'DELETE',
+      })
+          .then(r => r.json())
+          .then((response) => {
+        if (response.error) {
+          alert('Can\'t delete user!');
+          return;
+        }
+        this.boardUsers.splice(this.boardUsers.findIndex(bu => bu.id === userID), 1);
+      })
     },
     addElement(board) {
       this.openElement(this.template.element, board)
@@ -257,7 +335,51 @@ export default {
             }
             this.closeBoard();
           })
+    },
+    addUserToABoard(userID, boardID) {
+      alert(userID+ " -- " +boardID)
+      fetch(`http://localhost:8081/addUserToABoard/${userID}/${boardID}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        //body: JSON.stringify({boardName: board.boardName})
+      })
+          .then( response =>  response.json())
+          .then( userJson => {
+            // if (!board.id) {
+            //   this.boards.push(boardJson);
+            // } else {
+            //   this.$set(this.boards, this.boards.findIndex(b => board.id === b.id), boardJson);
+            // }
+            this.boardUsers.push(userJson);
+
+            console.log(userJson)
+            this.closeAddUserToBoardByID();
+          })
+    },
+    findUsersOfABoard(boardID) {
+      //alert(" -- " +boardID)
+      fetch(`http://localhost:8081/findUsersOfABoard/${boardID}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        //body: JSON.stringify({boardName: board.boardName})
+      })
+          .then( response =>  response.json())
+          .then( usersJson => {
+            // if (!board.id) {
+            //   this.boards.push(boardJson);
+            // } else {
+            //   this.$set(this.boards, this.boards.findIndex(b => board.id === b.id), boardJson);
+            // }
+            this.boardUsers = usersJson;
+
+            console.log(usersJson)
+          })
     }
+
     // findUserById(userID) {
     //
     //   fetch(`http://localhost:8081/findUserByID/${userID}`)
@@ -273,6 +395,9 @@ export default {
         .then( response =>  response.json())
         .then( boardsFromServerJson => {
           this.boards = boardsFromServerJson;
+
+          //this.messages.push([msg.personFrom.name, msg.msg, msg.date]);
+
           console.log(boardsFromServerJson)
         })
         .catch(exception => console.error(exception));

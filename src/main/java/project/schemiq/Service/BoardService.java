@@ -10,6 +10,9 @@ import project.schemiq.model.UserModel;
 import project.schemiq.repository.BoardRepository;
 import project.schemiq.repository.ElementRepository;
 import project.schemiq.repository.UserRepository;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.Optional;
 
@@ -23,6 +26,7 @@ public class BoardService {
     public BoardModel createBoard(BoardModel boardModel) {
         return boardRepository.save(boardModel);
     }
+
 
     public BoardModel createBoardWithUserID(BoardModel boardModel, Long userID) {
 
@@ -46,6 +50,51 @@ public class BoardService {
             BoardModel existingBoard = board.get();
             existingBoard.setBoardName(boardModel.getBoardName());
             return boardRepository.save(existingBoard);
+        }
+        else{
+            throw new ObjectNotFoundException(UserService.class, SchemiqApplication.userNotFound);
+        }
+    }
+
+
+    public List<UserModel> findUsersOfABoard(Long boardID){
+        Optional<BoardModel> board = boardRepository.findById(boardID);
+        if(board.isPresent()){
+            List<UserModel> userModelList = new ArrayList<>();
+
+            BoardModel existingBoard = board.get();
+
+            for(Long usersID : boardRepository.findBoardUsers(existingBoard.getId())){
+                Optional<UserModel> foundUser = userRepository.findUserById(usersID);
+                if(foundUser.isPresent()){
+                    userModelList.add(foundUser.get());
+                }
+            }
+
+            return userModelList;
+        }
+        else{
+            throw new ObjectNotFoundException(UserService.class, SchemiqApplication.userNotFound);
+        }
+
+    }
+
+    public void deleteUserFromBoard(Long boardID, Long userID) {
+        Optional<BoardModel> board = boardRepository.findById(boardID);
+        Optional<UserModel> user = userRepository.findById(userID);
+
+        if(board.isPresent() && user.isPresent()){
+            BoardModel existingBoard = board.get();
+            UserModel existingUser = user.get();
+
+            if (existingBoard.getOwner() == null || existingUser.getId() == existingBoard.getOwner().getId()){
+                throw new ObjectNotFoundException(UserService.class, SchemiqApplication.userNotFound);
+            }
+
+            Set<BoardModel> boardModel = existingUser.getBoardModel();
+            boardModel.remove(existingBoard);
+            existingUser.setBoardModel(boardModel);
+            userRepository.save(existingUser);
         }
         else{
             throw new ObjectNotFoundException(UserService.class, SchemiqApplication.userNotFound);

@@ -22,24 +22,25 @@ public class ElementModel {
     @Temporal(TemporalType.TIMESTAMP)
     private Date addChangeTime;
 
-    private Long userChangeId;
+    @ManyToOne
+    private UserModel userChangeModel;
 
-    public ElementModel(Long id, String name, String description, ElementStatus elementStatus, Long userChangeId) {
+    public ElementModel(Long id, String name, String description, ElementStatus elementStatus, UserModel userChangeModel) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.elementStatus = elementStatus;
         this.addChangeTime = new Date() ;
-        this.userChangeId = userChangeId;
+        this.userChangeModel = userChangeModel;
     }
 
-    public ElementModel(Long id, String name, String description, ElementStatus elementStatus, BoardModel boardModel, Long userChangeId) {
+    public ElementModel(Long id, String name, String description, ElementStatus elementStatus, BoardModel boardModel, UserModel userChangeModel) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.elementStatus = elementStatus;
         this.boardModel = boardModel;
-        this.userChangeId = userChangeId;
+        this.userChangeModel = userChangeModel;
     }
 //x
 
@@ -51,12 +52,12 @@ public class ElementModel {
         this.addChangeTime = addChangeTime;
     }
 
-    public Long getUserChangeId() {
-        return userChangeId;
+    public UserModel getUserChangeModel() {
+        return userChangeModel;
     }
 
-    public void setUserChangeId(Long userChangeId) {
-        this.userChangeId = userChangeId;
+    public void setUserChangeModel(UserModel userChangeId) {
+        this.userChangeModel = userChangeId;
     }
 
     public ElementModel() {

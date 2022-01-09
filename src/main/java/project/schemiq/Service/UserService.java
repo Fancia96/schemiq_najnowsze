@@ -64,6 +64,28 @@ public class UserService {
         throw new ObjectNotFoundException(UserService.class, SchemiqApplication.userNotFound);
     }
 
+    public UserModel addUserToABoard(Long userID, Long boardID) {
+
+        Optional<UserModel> user = userRepository.findById(userID);
+        if(user.isPresent()){
+            Optional<BoardModel> board = boardRepository.findById(boardID);
+            if(board.isPresent()){
+
+                UserModel userModel = user.get();
+                //boardRepository.save(board.get());
+                userModel.getBoardModel().add(board.get());
+                userRepository.save(userModel);
+                return userModel;
+            }
+            else{
+                throw new ObjectNotFoundException(UserService.class, SchemiqApplication.boardNotFound);
+            }
+        }
+        else{
+            throw new ObjectNotFoundException(UserService.class, SchemiqApplication.userNotFound);
+        }
+    }
+
     public Set<BoardModel> getUsersBoards(UserModel userModel) {
         Optional<UserModel> user = userRepository.findUserByName(userModel.getName());
         if(user.isPresent()){

@@ -13,6 +13,9 @@ public class BoardModel {
     private Long id;
     private String boardName;
 
+    @ManyToOne
+    private UserModel owner;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "boardModel")
     private List<ElementModel> elementModelList = new ArrayList<ElementModel>();
 
@@ -27,6 +30,13 @@ public class BoardModel {
         this.elementModelList = elementModelList;
     }
 
+    public UserModel getOwner() {
+        return owner;
+    }
+
+    public void setOwner(UserModel owner) {
+        this.owner = owner;
+    }
 
     public BoardModel() {
     }

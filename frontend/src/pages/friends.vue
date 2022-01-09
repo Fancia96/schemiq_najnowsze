@@ -57,9 +57,6 @@
       <div class="d-flex justify-content-center">
         <b-btn type="primary" @click="openAddFriendByID()"><b-icon-plus></b-icon-plus> Add friend by ID</b-btn>
       </div>
-      <div class="d-flex justify-content-center">
-        <b-btn type="primary" @click="openAddFriendBySearch()"><b-icon-plus></b-icon-plus> Search friends</b-btn>
-      </div>
     </b-modal>
 
     <b-modal ref="friendAddBySearchModal" hide-footer title="Searching for friends">
@@ -174,8 +171,8 @@ export default {
     closeAddFriendBySearch() {
       this.$refs.friendAddBySearchModal.hide();
     },
-    sendMessage(e) {
-      e.preventDefault();
+    sendMessage() {
+
       fetch(`http://localhost:8081/sendMessageBetweenIDs/${this.$root.user.id}/${this.edit.friend.id}`, {
         method: 'POST',
         headers: {
@@ -185,13 +182,14 @@ export default {
       })
         .then(r => r.json())
         .then(msg => {
-          console.log(msg);
+          this.messages.push([msg.personFrom.name, msg.msg, msg.date]);
+          this.edit.friend.message = '';
         })
         .catch(e => console.error(e))
     },
 
     addFriend(addFriendByID){
-      alert(addFriendByID);
+      //alert(addFriendByID);
 
       fetch(`http://localhost:8081/addFriendshipBetweenIDs/${this.$root.user.id}/${addFriendByID}`, {
         method: 'POST',
@@ -201,8 +199,20 @@ export default {
         //body: JSON.stringify({msg: this.edit.friend.message})
       }).then( friendship => {
         if(friendship){
-          alert('Friend added')
-          this.$router.replace('/friends');
+
+
+
+          fetch(`http://localhost:8081/findFriendsForID/${this.$root.user.id}`)
+              .then( response =>  response.json())
+              .then( friends => {
+                this.friends = friends;
+              })
+              .catch(exception => console.error(exception));
+
+
+          this.closeAddFriendByID();
+          this.closeAddOptionFriend();
+          //alert('Friend added')
 
         }
         else{

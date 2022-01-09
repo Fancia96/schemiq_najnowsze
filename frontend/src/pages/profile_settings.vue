@@ -75,6 +75,10 @@
 
       <b-button type="submit" variant="primary">Save changes</b-button>
 
+        <b-list-group-item @click="deleteUser()" href="#">
+          <b-icon-></b-icon-> Delete account
+        </b-list-group-item>
+
     </b-form>
 
 <!--    <b-button v-b-modal.modal-footer-sm >I want to delete my account</b-button>-->
@@ -92,11 +96,7 @@
 <!--      </b-form-group>-->
 <!--    </b-modal>-->
 
-    <div>
-      <b-list-group-item @click="deleteUser()" href="#">
-        <b-icon-></b-icon-> Delete account
-      </b-list-group-item>
-    </div>
+
 
   </div>
 </template>

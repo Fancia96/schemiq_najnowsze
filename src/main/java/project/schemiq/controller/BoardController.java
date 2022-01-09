@@ -50,6 +50,19 @@ public class BoardController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping("/deleteUserFromBoard/{boardID}/{userID}")
+    public ResponseEntity<Void> deleteUserFromBoard(@PathVariable Long boardID, @PathVariable Long userID){
+        boardService.deleteUserFromBoard(boardID, userID);
+
+        return ResponseEntity.ok().build();
+    }
+
+
+    @GetMapping("/findUsersOfABoard/{boardID}")
+    public ResponseEntity<List<UserModel>> findUsersOfABoard(@PathVariable Long boardID){
+        return ResponseEntity.ok(boardService.findUsersOfABoard(boardID));
+    }
+
 //    @PostMapping("/addCustomDataBoards")
 //    public ResponseEntity<String> addCustomDataBoards() throws Exception{
 //        BoardModel createThisBoard1 = boardService.createBoard(

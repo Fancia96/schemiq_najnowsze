@@ -55,6 +55,12 @@ public class UserController {
 
     }
 
+    @PostMapping("/addUserToABoard/{userID}/{boardID}")
+    public ResponseEntity<UserModel> addUserToABoard(@PathVariable Long userID, @PathVariable Long boardID){
+        UserModel addThisBoard = userService.addUserToABoard(userID, boardID);
+        return ResponseEntity.ok(addThisBoard);
+    }
+
     @PostMapping("/createUser")
     public ResponseEntity<UserModel> createPerson(@RequestBody UserModel userModel){
         UserModel createThisPerson = UserService.createUser(userModel);
