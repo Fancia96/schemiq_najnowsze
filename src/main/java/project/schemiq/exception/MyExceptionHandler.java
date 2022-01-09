@@ -1,5 +1,7 @@
 package project.schemiq.exception;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -37,9 +39,13 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class MyExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handleThis(RuntimeException runtimeException){
+    public ResponseEntity<String> handleThis(RuntimeException runtimeException) throws JSONException {
         String excMsg = "Exception on request. Exception message" + runtimeException.getLocalizedMessage();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(excMsg);
+
+        JSONObject json = new JSONObject();
+        json.put("error", runtimeException.getLocalizedMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(json.toString());
     }
 
 }

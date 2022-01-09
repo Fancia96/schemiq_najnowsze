@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import project.schemiq.SchemiqApplication;
 import project.schemiq.model.BoardModel;
 import project.schemiq.model.ElementModel;
+import project.schemiq.model.UserModel;
+import project.schemiq.repository.BoardRepository;
 import project.schemiq.repository.ElementRepository;
 import java.util.List;
 import java.util.Optional;
@@ -13,10 +15,22 @@ import java.util.Optional;
 public class ElementService {
 
     private static ElementRepository elementRepository;
+    private static BoardRepository boardRepository;
 
-    public ElementModel createElement(ElementModel elementModel) {
-        ElementModel elementUserModel = elementModel;
-        return elementRepository.save(elementUserModel);
+    public ElementModel createElement(ElementModel elementModel, Long boardID) {
+
+        Optional<BoardModel> boardModel = boardRepository.findById(boardID);
+        if(boardModel.isPresent()){
+
+            //elementModel.
+            ElementModel elementUserModel = elementModel;
+            elementUserModel.setBoardModel(boardModel.get());
+            return elementRepository.save(elementUserModel);
+        }
+        else{
+            throw new ObjectNotFoundException(UserService.class, SchemiqApplication.boardNotFound);
+        }
+
     }
 
     public List<ElementModel> findBoardElementsByID(BoardModel boardModel){
@@ -42,9 +56,23 @@ public class ElementService {
         elementRepository.deleteAll();
     }
 
-    public ElementService(ElementRepository elementRepository){
+    public ElementService(ElementRepository elementRepository, BoardRepository boardRepository){
         this.elementRepository = elementRepository;
+        this.boardRepository = boardRepository;
 
+    }
+
+    public static ElementModel updateElementByElementModel(ElementModel elementModel, Long elementID) {
+        Optional<ElementModel> element = elementRepository.findById(elementID);
+        if(element.isPresent()){
+            ElementModel new_element = element.get();
+            new_element.setName(elementModel.getName());
+            new_element.setDescription(elementModel.getDescription());
+            new_element.setElementStatus(elementModel.getElementStatus());
+
+            return elementRepository.save(new_element);
+        }
+        throw new ObjectNotFoundException(UserService.class, SchemiqApplication.userNotFound);
     }
 
     public ElementModel findOne(ElementModel elementModel) {

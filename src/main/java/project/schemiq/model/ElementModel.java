@@ -1,10 +1,13 @@
 package project.schemiq.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity(name = "element")
 public class ElementModel {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String description;
@@ -12,6 +15,7 @@ public class ElementModel {
     private ElementStatus elementStatus;
 
     @ManyToOne
+    @JsonIgnore
     private BoardModel boardModel;
 
     public ElementModel(Long id, String name, String description, ElementStatus elementStatus) {
@@ -47,5 +51,29 @@ public class ElementModel {
 
     public ElementStatus getElementStatus() {
         return elementStatus;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setElementStatus(ElementStatus elementStatus) {
+        this.elementStatus = elementStatus;
+    }
+
+    public BoardModel getBoardModel() {
+        return boardModel;
+    }
+
+    public void setBoardModel(BoardModel boardModel) {
+        this.boardModel = boardModel;
     }
 }

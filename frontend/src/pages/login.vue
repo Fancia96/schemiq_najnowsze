@@ -1,5 +1,7 @@
 <template>
   <div>
+
+    <h2>Logging in</h2>
     <b-form @submit="onSubmit">
       <b-form-group
           id="input-group-1"
@@ -30,6 +32,10 @@
 
     </b-form>
 
+    <b-link :to="'/create_account'">
+      I want to create account
+    </b-link>
+
   </div>
 </template>
 
@@ -48,7 +54,7 @@ export default {
   methods: {
     onSubmit(event) {
       event.preventDefault()
-      alert(JSON.stringify(this.form))
+      //alert(JSON.stringify(this.form))
 
       fetch(`http://localhost:8081/findUserByEmailAndPassword`, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -58,6 +64,11 @@ export default {
         body: JSON.stringify(this.form) // body data type must match "Content-Type" header
       }).then( response =>  response.json())
           .then( user => {
+            if(user.error){
+              alert(user.error);
+              return;
+            }
+
             localStorage.setItem('user', JSON.stringify(user))
             this.$root.user = user;
 

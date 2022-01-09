@@ -16,4 +16,7 @@ public class SchemiqApplication {
 	public static String userNotFound = "~~User not found~~";
 	public static String elementNotFound = "~~Element not found~~";
 	public static String boardNotFound = "~~Board not found~~";
+
+	public static String messageNotFound = "~~Message not found~~";
+	public static String friendshipNotFound = "~~Friendship not found~~";
 }

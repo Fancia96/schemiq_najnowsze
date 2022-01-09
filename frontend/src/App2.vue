@@ -9,6 +9,7 @@
 
           <b-list-group>
             <b-list-group-item :to="'/dashboard'" :disabled="!$root.user"><b-icon-folder></b-icon-folder> Boards</b-list-group-item>
+            <b-list-group-item :to="'/friends'" :disabled="!$root.user"><b-icon-diamond></b-icon-diamond> Friends</b-list-group-item>
             <b-list-group-item :to="'/settings'" :disabled="!$root.user"><b-icon-nut></b-icon-nut> Settings</b-list-group-item>
           </b-list-group>
         </div>
@@ -27,19 +28,19 @@
                     <em v-if="$root.user">{{$root.user.name}}</em>
                     <em v-else>User</em>
                   </template>
-                  <b-dropdown-item :disabled=!$root.user href="#">Profile</b-dropdown-item>
+                  <b-dropdown-item :disabled=!$root.user :to="'/profile_settings'" href="#">Profile</b-dropdown-item>
 
                   <b-dropdown-item v-if="$root.user" href="#" @click="SignOut">Sign Out</b-dropdown-item>
                   <b-dropdown-item v-else href="#" @click="SignIn">Sign In</b-dropdown-item>
                 </b-nav-item-dropdown>
               </b-navbar-nav>
-              <b-navbar-nav class="ml-auto" align="right">
-                <b-nav-form>
-                  <b-input-group prepend="🔎">
-                    <b-form-input placeholder="Search"></b-form-input>
-                  </b-input-group>
-                </b-nav-form>
-              </b-navbar-nav>
+<!--              <b-navbar-nav class="ml-auto" align="right">-->
+<!--                <b-nav-form>-->
+<!--                  <b-input-group prepend="🔎">-->
+<!--                    <b-form-input placeholder="Search"></b-form-input>-->
+<!--                  </b-input-group>-->
+<!--                </b-nav-form>-->
+<!--              </b-navbar-nav>-->
             </b-collapse>
           </b-container>
         </b-navbar>
@@ -71,7 +72,9 @@ export default {
   mounted() {
 
     if (!this.$root.user) {
-      this.$router.replace('/login');
+      if(this.$router.currentRoute.fullPath !== '/login'){
+        this.$router.replace('/login');
+      }
       //go to login/register
     } else if (this.$router.currentRoute.fullPath === '/' || this.$router.currentRoute.fullPath === '/login') {
 

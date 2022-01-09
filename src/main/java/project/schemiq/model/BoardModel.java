@@ -43,4 +43,16 @@ public class BoardModel {
     public List<ElementModel> getElementModelList() {
         return elementModelList;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setBoardName(String boardName) {
+        this.boardName = boardName;
+    }
+
+    public void setElementModelList(List<ElementModel> elementModelList) {
+        this.elementModelList = elementModelList;
+    }
 }

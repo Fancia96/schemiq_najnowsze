@@ -1,6 +1,9 @@
 package project.schemiq.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Cascade;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -19,12 +22,9 @@ public class UserModel {
     private String password;
 
 
-    @ManyToMany
-    private Set<BoardModel> boardModel;
-
-
-
-    //x
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<BoardModel> boardModel = new HashSet<BoardModel>();
 
     public UserModel(Long id, String email, String firstName, String lastName, String name, String password) {
         this.id = id;
@@ -70,6 +70,23 @@ public class UserModel {
         this.boardModel = boardModel;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

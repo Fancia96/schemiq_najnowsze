@@ -24,6 +24,14 @@ public class UserService {
         return userRepository.save(newBoardRepository);
     }
 
+    public static void deleteUser(UserModel userModel) {
+        userRepository.delete(userModel);
+    }
+
+    public void deleteUserByID(Long ID){
+        userRepository.deleteById(ID);
+    }
+
 //    private static boolean checkIfYouCanCreateUser(String name){
 //        for(String bad : SchemiqApplication.badWords){
 //            if(name.toLowerCase().contains(bad.toLowerCase())){
@@ -33,9 +41,7 @@ public class UserService {
 //        return true;
 //    }
 
-    public void deleteUserByID(Long ID){
-        userRepository.deleteById(ID);
-    }
+
 
     public UserModel findUserByID(Long ID){
         Optional<UserModel> user = userRepository.findById(ID);
@@ -45,10 +51,18 @@ public class UserService {
         throw new ObjectNotFoundException(UserService.class, SchemiqApplication.userNotFound);
     }
 
+    public static UserModel editUserByID(UserModel userModel) {
+        Optional<UserModel> user = userRepository.findById(userModel.getId());
+        if(user.isPresent()){
+            UserModel new_user = user.get();
+            new_user.setName(userModel.getName());
+            new_user.setFirstName(userModel.getFirstName());
+            new_user.setLastName(userModel.getLastName());
+            new_user.setPassword(userModel.getPassword());
 
-    public BoardModel createBoard(BoardModel boardModel) {
-        BoardModel newBoardRepository = boardModel;
-        return boardRepository.save(newBoardRepository);
+            return userRepository.save(new_user);
+        }
+        throw new ObjectNotFoundException(UserService.class, SchemiqApplication.userNotFound);
     }
 
     public Set<BoardModel> getUsersBoards(UserModel userModel) {
@@ -59,17 +73,12 @@ public class UserService {
         throw new ObjectNotFoundException(UserService.class, SchemiqApplication.userNotFound);
     }
 
-    public void createBoardModelHavingUser(UserModel userModelFind, BoardModel boardModel){
-        Optional<UserModel> user = userRepository.findUserByName(userModelFind.getName());
-        BoardModel newBoardRepository = boardModel;
+    public Set<BoardModel> findBoardsByUserID(Long userID) {
+        Optional<UserModel> user = userRepository.findById(userID);
         if(user.isPresent()){
-
-            BoardModel addedbm = boardRepository.save(newBoardRepository);
-
-            user.get().getBoardModel().add(addedbm);
-
-            userRepository.save(user.get());
+            return user.get().getBoardModel();
         }
+        throw new ObjectNotFoundException(UserService.class, SchemiqApplication.userNotFound);
     }
 
     public UserModel findUserByEmailAndPassword(UserModel userModelFind){
@@ -104,15 +113,6 @@ public class UserService {
         this.userRepository = userRepository;
         this.boardRepository = boardRepository;
 
-    }
-
-    public UserModel findOne(UserModel userModel) {
-        Optional<UserModel> user = userRepository.findById(userModel.getId());
-        if(user.isPresent()){
-
-            return user.get();
-        }
-        return null;
     }
 
 }

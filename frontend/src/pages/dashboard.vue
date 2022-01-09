@@ -86,6 +86,33 @@
                 required
             ></b-form-input>
           </b-form-group>
+
+<!--          <b-list-group>-->
+<!--            <b-list-group-item-->
+<!--                v-for="friend in board.elementModelList"-->
+<!--                :key="`friend-${element.id}`"-->
+<!--                href="#"-->
+<!--                @click="openElement(element, board)"-->
+<!--            >-->
+<!--              <div class="text-start">-->
+<!--                {{element.name}}-->
+<!--                <hr class="mb-0 mt-1"/>-->
+<!--                <small :class="{-->
+<!--               'text-danger': element.elementStatus === 'FAILED',-->
+<!--              'text-warning': element.elementStatus === 'IN_PROGRESS',-->
+<!--              'text-muted': element.elementStatus === 'CLOSED',-->
+<!--              'text-success': element.elementStatus === 'NEW',-->
+<!--              }">{{element.elementStatus}}</small>-->
+<!--                <hr class="mt-0 mb-1"/>-->
+<!--                <small class="text-muted">{{element.description}}</small>-->
+<!--              </div>-->
+<!--            </b-list-group-item>-->
+<!--&lt;!&ndash;            <b-list-group-item @click="addElement(board)" href="#">&ndash;&gt;-->
+<!--&lt;!&ndash;              <b-icon-plus></b-icon-plus> Add element&ndash;&gt;-->
+<!--&lt;!&ndash;            </b-list-group-item>&ndash;&gt;-->
+<!--          </b-list-group>-->
+
+
           <div class="d-flex justify-content-center mt-3">
             <b-button v-if="edit.board.id" variant="danger" style="margin-right: 1em;" @click="deleteBoard(edit.board)">
               <b-icon-trash /> Delete
@@ -162,18 +189,16 @@ export default {
     },
     saveElement(element) {
       let board = this.boards.find(b => element.board === b.id);
-
-      fetch(board.id ? `http://localhost:8081/updateElement/${board.id}` : `http://localhost:8081/createElement`, {
-        method: 'POST',
+      fetch(element.id ? `http://localhost:8081/updateElement/${element.id}` : `http://localhost:8081/createElement/${board.id}`, {
+        method: element.id ? 'PUT' : 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          board: board.id,
           description: element.description,
           name: element.name,
-          element_status: element.element_status
-        }) // body data type must match "Content-Type" header
+          elementStatus: element.elementStatus
+        })
       })
           .then( response =>  response.json())
           .then( elementJson => {
@@ -196,8 +221,8 @@ export default {
 
     },
     saveBoard(board) {
-      fetch(board.id ? `http://localhost:8081/updateBoard/${board.id}` : `http://localhost:8081/createBoard`, {
-        method: 'POST',
+      fetch(board.id ? `http://localhost:8081/updateBoard/${board.id}` : `http://localhost:8081/createBoardWithUserID/${this.$root.user.id}`, {
+        method: board.id ? 'PUT' : 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
@@ -215,7 +240,7 @@ export default {
     }
   },
   mounted(){
-    fetch(`http://localhost:8081/getAllExistingBoards`)
+    fetch(`http://localhost:8081/findBoardsByUserID/${this.$root.user.id}`)
         .then( response =>  response.json())
         .then( boardsFromServerJson => {
           this.boards = boardsFromServerJson;

@@ -33,6 +33,11 @@ public class UserController {
 
     }
 
+    @GetMapping("/findBoardsByUserID/{ID}")
+    public ResponseEntity<Set<BoardModel>> findBoardByUserID(@PathVariable Long ID){
+        return ResponseEntity.ok(userService.findBoardsByUserID(ID));
+    }
+
 
     @PostMapping("/addCustomDataUsers")
     public ResponseEntity<String> addCustomDataUsers() throws Exception{
@@ -56,12 +61,20 @@ public class UserController {
         return ResponseEntity.ok(createThisPerson);
     }
 
-//    @PutMapping("/editUser")
-//    public ResponseEntity<UserModel> editPersonByID(@RequestBody UserModel person){
-//        UserModel  editThisPerson = userService.editUserByID(person);
-//
-//        return ResponseEntity.ok(editThisPerson);
-//    }
+    @PutMapping("/editUser")
+    public ResponseEntity<UserModel> editPersonByID(@RequestBody UserModel userModel){
+        UserModel  editThisPerson = userService.editUserByID(userModel);
+
+        return ResponseEntity.ok(editThisPerson);
+    }
+
+
+    @DeleteMapping("/deleteUser")
+    public ResponseEntity<Void> deleteUserByID(@RequestBody UserModel userModel){
+        userService.deleteUserByID(userModel.getId());
+
+        return ResponseEntity.ok().build();
+    }
 
     @DeleteMapping("/deleteUserByID/{ID}")
     public ResponseEntity<Void> deleteUserByID(@PathVariable Long ID){

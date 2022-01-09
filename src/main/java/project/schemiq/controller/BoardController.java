@@ -32,34 +32,52 @@ public class BoardController {
         return ResponseEntity.ok(createThisBoard);
     }
 
-    @PostMapping("/addCustomDataBoards")
-    public ResponseEntity<String> addCustomDataBoards() throws Exception{
-        BoardModel createThisBoard1 = boardService.createBoard(
-                new BoardModel(1l,
-                        "tablica jeden" ));
-
-        BoardModel  createThisBoard2 = boardService.createBoard(
-                new BoardModel(2l,
-                        "tablica druga" ));
-
-        userService.createBoardModelHavingUser(userService.findUserByID(1l), createThisBoard1);
-
-        return ResponseEntity.ok("i added test boards :D");
-
+    @PostMapping("/createBoardWithUserID/{userID}")
+    public ResponseEntity<BoardModel> createBoardWithUserID(@RequestBody BoardModel boardModel, @PathVariable Long userID){
+        BoardModel createThisBoard = boardService.createBoardWithUserID(boardModel, userID);
+        return ResponseEntity.ok(createThisBoard);
     }
 
-    @PostMapping("/addCustomDataBoardsConenction")
-    public ResponseEntity<String> addCustomDataBoardsConenction() throws Exception{
-
-        BoardModel  createThisBoard2 = boardService.createBoard(
-                new BoardModel(4l,
-                        "tablica tralalala" ));
-
-        userService.createBoardModelHavingUser(userService.findUserByID(2l), createThisBoard2);
-
-        return ResponseEntity.ok("i added test boards :D");
-
+    @PutMapping("/updateBoard/{ID}")
+    public ResponseEntity<BoardModel> updateBoardByID(@RequestBody BoardModel boardModel, @PathVariable Long ID){
+        return ResponseEntity.ok(boardService.updateBoardByID(boardModel, ID));
     }
+
+    @DeleteMapping("/deleteBoard/{ID}")
+    public ResponseEntity<Void> deleteBoardByID(@PathVariable Long ID){
+        boardService.deleteBoardByID(ID);
+
+        return ResponseEntity.ok().build();
+    }
+
+//    @PostMapping("/addCustomDataBoards")
+//    public ResponseEntity<String> addCustomDataBoards() throws Exception{
+//        BoardModel createThisBoard1 = boardService.createBoard(
+//                new BoardModel(1l,
+//                        "tablica jeden" ));
+//
+//        BoardModel  createThisBoard2 = boardService.createBoard(
+//                new BoardModel(2l,
+//                        "tablica druga" ));
+//
+//        userService.createBoardModelHavingUser(userService.findUserByID(1l), createThisBoard1);
+//
+//        return ResponseEntity.ok("i added test boards :D");
+//
+//    }
+//
+//    @PostMapping("/addCustomDataBoardsConenction")
+//    public ResponseEntity<String> addCustomDataBoardsConenction() throws Exception{
+//
+//        BoardModel  createThisBoard2 = boardService.createBoard(
+//                new BoardModel(4l,
+//                        "tablica tralalala" ));
+//
+//        userService.createBoardModelHavingUser(userService.findUserByID(2l), createThisBoard2);
+//
+//        return ResponseEntity.ok("i added test boards :D");
+//
+//    }
 
 //    @GetMapping("/findBoardByName")
 //    public ResponseEntity<BoardModel> findBoardByBoardName(@RequestBody BoardModel boardModel){
@@ -72,14 +90,9 @@ public class BoardController {
         return ResponseEntity.ok(boardService.findBoardByID(ID));
     }
 
-    @GetMapping("/findBoardrByUserID/{ID}")
-    public ResponseEntity<BoardModel> findBoardByUserID(@PathVariable Long ID){
-        return ResponseEntity.ok(boardService.findBoardByUserID(ID));
-    }
-
-    @GetMapping("/getAllExistingBoards")
-    public ResponseEntity<List<BoardModel>> getEverything() {
-        return ResponseEntity.ok(boardService.getEverything());
-    }
+//    @GetMapping("/getAllExistingBoards")
+//    public ResponseEntity<List<BoardModel>> getEverything() {
+//        return ResponseEntity.ok(boardService.getEverything());
+//    }
 
 }

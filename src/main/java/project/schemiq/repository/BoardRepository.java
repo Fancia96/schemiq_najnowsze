@@ -10,6 +10,9 @@ import java.util.List;
 @Repository
 public interface BoardRepository extends JpaRepository<BoardModel, Long> {
 
-    List<BoardModel> findBoardModelBy(Long ID);
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM user_board_model where board_model_id = :boardID ", nativeQuery = true)
+    void deleteBoardUsers(Long boardID);
 
 }
