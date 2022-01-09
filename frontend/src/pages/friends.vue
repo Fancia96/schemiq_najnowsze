@@ -14,7 +14,7 @@
       </div>
       <div class="col-9">
         <div class="text-end">
-          <b-btn type="primary" @click="openAddFriend()"><b-icon-plus></b-icon-plus> Add friend</b-btn>
+          <b-btn type="primary" @click="openAddOptionFriend()"><b-icon-plus></b-icon-plus> Add friend</b-btn>
         </div>
       </div>
     </div>
@@ -53,31 +53,26 @@
       </div>
     </b-modal>
 
-    <b-modal ref="friendAddModal" hide-footer title="Adding new friend">
+    <b-modal ref="friendAddOptionModal" hide-footer title="Choose option to add a friend">
+      <div class="d-flex justify-content-center">
+        <b-btn type="primary" @click="openAddFriendByID()"><b-icon-plus></b-icon-plus> Add friend by ID</b-btn>
+      </div>
+      <div class="d-flex justify-content-center">
+        <b-btn type="primary" @click="openAddFriendBySearch()"><b-icon-plus></b-icon-plus> Search friends</b-btn>
+      </div>
+    </b-modal>
+
+    <b-modal ref="friendAddBySearchModal" hide-footer title="Searching for friends">
       <b-form @submit="addFriend(addFriendByID)">
-        <b-form-group
-            id="input-group-4"
-            label="Put ID of other user:"
-            label-for="input-4"
-            description="you can find it in your profile"
-        >
-          <b-form-input
-              id="input-4"
-              v-model="addFriendByID"
-              type="text"
-              placeholder="Enter user ID"
-              required
-          ></b-form-input>
-        </b-form-group>
 
         <b-form-group
-            id="input-group-4"
+            id="input-group-1"
             label="Or search for them by name to invite"
-            label-for="input-4"
+            label-for="input-1"
             description=""
         >
           <b-form-input
-              id="input-4"
+              id="input-1"
               v-model="addFriendByID"
               type="text"
               placeholder="Pick a user"
@@ -85,6 +80,32 @@
           ></b-form-input>
         </b-form-group>
 
+        <div class="d-flex justify-content-center">
+          <b-btn type="primary" @click="openAddFriendBySearch()"><b-icon-plus></b-icon-plus> Search friends</b-btn>
+        </div>
+
+        <div class="d-flex justify-content-center mt-3">
+          <b-button type="submit" variant="primary" ><b-icon-check /> Add to friends</b-button>
+        </div>
+      </b-form>
+    </b-modal>
+
+    <b-modal ref="friendAddByIDModal" hide-footer title="Adding new friend by ID">
+      <b-form @submit="addFriend(addFriendByID)">
+        <b-form-group
+            id="input-group-1"
+            label="Put ID of other user:"
+            label-for="input-1"
+            description="you can find it in your profile"
+        >
+          <b-form-input
+              id="input-1"
+              v-model="addFriendByID"
+              type="text"
+              placeholder="Enter user ID"
+              required
+          ></b-form-input>
+        </b-form-group>
         <div class="d-flex justify-content-center mt-3">
           <b-button type="submit" variant="primary" ><b-icon-check /> Add to friends</b-button>
         </div>
@@ -135,11 +156,23 @@ export default {
         this.closeFriend();
       })
     },
-    openAddFriend() {
-      this.$refs.friendAddModal.show();
+    openAddOptionFriend() {
+      this.$refs.friendAddOptionModal.show();
     },
-    closeAddFriend() {
-      this.$refs.friendAddModal.hide();
+    closeAddOptionFriend() {
+      this.$refs.friendAddOptionModal.hide();
+    },
+    openAddFriendByID() {
+      this.$refs.friendAddByIDModal.show();
+    },
+    closeAddFriendByID() {
+      this.$refs.friendAddByIDModal.hide();
+    },
+    openAddFriendBySearch() {
+      this.$refs.friendAddBySearchModal.show();
+    },
+    closeAddFriendBySearch() {
+      this.$refs.friendAddBySearchModal.hide();
     },
     sendMessage(e) {
       e.preventDefault();
