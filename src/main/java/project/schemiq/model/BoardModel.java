@@ -14,12 +14,11 @@ public class BoardModel {
     private String boardName;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "boardModel")
-    private List<ElementModel> elementModelList;
+    private List<ElementModel> elementModelList = new ArrayList<ElementModel>();
 
     public BoardModel(Long id, String boardName) {
         this.id = id;
         this.boardName = boardName;
-        this.elementModelList = new ArrayList<>();
     }
 
     public BoardModel(Long id, String boardName, List<ElementModel> elementModelList) {

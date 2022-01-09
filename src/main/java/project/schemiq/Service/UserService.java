@@ -20,8 +20,7 @@ public class UserService {
     private static BoardRepository boardRepository;
 
     public static UserModel createUser(UserModel userModel) {
-        UserModel newBoardRepository = userModel;
-        return userRepository.save(newBoardRepository);
+        return userRepository.save(userModel);
     }
 
     public static void deleteUser(UserModel userModel) {

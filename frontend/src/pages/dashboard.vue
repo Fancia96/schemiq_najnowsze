@@ -6,7 +6,7 @@
       </div>
       <b-card v-for="board in boards" :key="`${board.id}-${board.boardName}`" class="board">
         <b-card-title>
-          <b-link @click="openBoard(board)">{{board.boardName}}</b-link>
+          <b-link @click="openBoard(board)">{{board.boardName || 'Untitled'}}</b-link>
         </b-card-title>
         <b-list-group>
           <b-list-group-item
@@ -15,7 +15,18 @@
               href="#"
               @click="openElement(element, board)"
           >
-            {{element.name}}
+            <div class="text-start">
+              {{element.name}}
+              <hr class="mb-0 mt-1"/>
+              <small :class="{
+               'text-danger': element.elementStatus === 'FAILED',
+              'text-warning': element.elementStatus === 'IN_PROGRESS',
+              'text-muted': element.elementStatus === 'CLOSED',
+              'text-success': element.elementStatus === 'NEW',
+              }">{{element.elementStatus}}</small>
+              <hr class="mt-0 mb-1"/>
+              <small class="text-muted">{{element.description}}</small>
+            </div>
           </b-list-group-item>
           <b-list-group-item @click="addElement(board)" href="#">
             <b-icon-plus></b-icon-plus> Add element
@@ -65,7 +76,7 @@
           </b-form-select>
         </b-form-group>
         <div class="d-flex justify-content-center mt-3">
-          <b-button v-if="edit.board.id" variant="danger" style="margin-right: 1em;" @click="deleteElement(edit.element)">
+          <b-button v-if="edit.element.id" variant="danger" style="margin-right: 1em;" @click="deleteElement(edit.element)">
             <b-icon-trash /> Delete
           </b-button>
           <b-button type="submit" variant="primary" ><b-icon-check /> Save</b-button>
@@ -124,14 +135,15 @@
   </div>
 </template>
 <style scoped>
-#boards {
-  width: 100%;
-  overflow-x: scroll;
-  display: flex;
-}
-.board {
-  width: 25%;
-}
+  #boards {
+    width: 100%;
+    overflow-x: scroll;
+    display: flex;
+    flex-wrap: nowrap;
+  }
+  .board {
+    width: 25%;
+  }
 </style>
 <script>
 export default {
@@ -226,7 +238,7 @@ export default {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({boardName: board.name}) // body data type must match "Content-Type" header
+        body: JSON.stringify({boardName: board.boardName})
       })
           .then( response =>  response.json())
           .then( boardJson => {

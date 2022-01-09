@@ -62,6 +62,10 @@ public class ElementService {
 
     }
 
+    public void deleteElementById(Long ID){
+        elementRepository.deleteById(ID);
+    }
+
     public static ElementModel updateElementByElementModel(ElementModel elementModel, Long elementID) {
         Optional<ElementModel> element = elementRepository.findById(elementID);
         if(element.isPresent()){

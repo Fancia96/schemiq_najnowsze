@@ -21,8 +21,7 @@ public class BoardService {
     private UserRepository userRepository;
 
     public BoardModel createBoard(BoardModel boardModel) {
-        BoardModel newBoardRepository = boardModel;
-        return boardRepository.save(newBoardRepository);
+        return boardRepository.save(boardModel);
     }
 
     public BoardModel createBoardWithUserID(BoardModel boardModel, Long userID) {

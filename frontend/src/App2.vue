@@ -14,7 +14,7 @@
           </b-list-group>
         </div>
       </div>
-      <div class="flex-grow-1">
+      <div class="flex-grow-1" style="height:100%;">
         <b-navbar toggleable="lg" type="light" variant="light" class="py-4">
           <b-container fluid>
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
