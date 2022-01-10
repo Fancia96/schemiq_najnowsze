@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity(name = "element")
 public class ElementModel {
@@ -14,6 +16,9 @@ public class ElementModel {
     private String description;
     @Enumerated(EnumType.STRING)
     private ElementStatus elementStatus;
+
+    @OneToMany(mappedBy = "elementModel")
+    private Set<ElementHistoryModel> elementHistoryModel = new HashSet<ElementHistoryModel>();
 
     @ManyToOne
     @JsonIgnore
@@ -41,6 +46,7 @@ public class ElementModel {
         this.elementStatus = elementStatus;
         this.boardModel = boardModel;
         this.userChangeModel = userChangeModel;
+
     }
 //x
 
@@ -101,5 +107,13 @@ public class ElementModel {
 
     public void setBoardModel(BoardModel boardModel) {
         this.boardModel = boardModel;
+    }
+
+    public Set<ElementHistoryModel> getElementHistoryModel() {
+        return elementHistoryModel;
+    }
+
+    public void setElementHistoryModel(Set<ElementHistoryModel> elementHistoryModel) {
+        this.elementHistoryModel = elementHistoryModel;
     }
 }

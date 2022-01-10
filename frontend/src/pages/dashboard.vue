@@ -28,9 +28,9 @@
               <hr class="mt-0 mb-1"/>
               <small class="text-muted">{{element.description}}</small>
               <hr class="mt-0 mb-1"/>
-              <small class="text-muted">
-<!--                <b-avatar variant="primary" class="mr-3" :text="(findUserById({{element.userChangeId}}) || '').charAt(0).toUpperCase()"></b-avatar>-->
-                <span>{{element.userChangeId}}</span>
+              <small class="text-muted" v-if="element.userChangeModel">
+                <b-avatar variant="primary" class="mr-3" :text="element.userChangeModel.name.charAt(0).toUpperCase()"></b-avatar>
+                <span>{{element.userChangeModel ? element.userChangeModel.name : ''}}</span>
 
               </small>
 
@@ -53,6 +53,7 @@
               v-model="edit.element.name"
               type="text"
               placeholder="Enter element name"
+              maxlength="30"
               required
           ></b-form-input>
         </b-form-group>
@@ -83,6 +84,24 @@
             <option value="FAILED">FAILED</option>
           </b-form-select>
         </b-form-group>
+
+        <div>
+        <b-button class="my-2" v-b-toggle.collapse-1 variant="primary">History</b-button>
+        <b-collapse id="collapse-1" class="mt-2">
+          <b-list-group ref="chatbox" style="max-height: 50vh; overflow-y: auto;">
+            <b-list-group-item v-for="(elementHistory, idx) in edit.element.elementHistoryModel" :key="idx">
+              <div class="d-flex align-items-center justify-content-between" style="overflow: hidden;">
+                <small class="text-muted" style="overflow: hidden; word-break: break-all; text-overflow: ellipsis;">Name: {{elementHistory.name}}</small>
+                <small class="text-muted">Element status: {{elementHistory.elementStatus}}</small>
+              </div>
+              <div class="text-muted" style="overflow: hidden; word-break: break-all; text-overflow: ellipsis;">Description: {{elementHistory.description}}</div>
+              <div class="text-muted">Change time: {{elementHistory.addChangeTime}}</div>
+              <div class="text-muted">Change user: {{elementHistory.userChangeModel}}</div>
+            </b-list-group-item>
+          </b-list-group>
+        </b-collapse>
+        </div>
+
         <div class="d-flex justify-content-center mt-3">
           <b-button v-if="edit.element.id" variant="danger" style="margin-right: 1em;" @click="deleteElement(edit.element)">
             <b-icon-trash /> Delete
@@ -121,35 +140,10 @@
                 </b-list-group>
             </div>
             <div class="d-flex justify-content-center mt-3">
-              <b-button type="submit" variant="primary" @click="openAddUserToBoardByID()" ><b-icon-plus /> Add more people</b-button>
+              <b-button  variant="primary" @click="openAddOptionFriend()" ><b-icon-plus /> Add more people</b-button>
             </div>
           </b-form-group>
           </div>
-
-<!--          <b-list-group>-->
-<!--            <b-list-group-item-->
-<!--                v-for="friend in board.elementModelList"-->
-<!--                :key="`friend-${element.id}`"-->
-<!--                href="#"-->
-<!--                @click="openElement(element, board)"-->
-<!--            >-->
-<!--              <div class="text-start">-->
-<!--                {{element.name}}-->
-<!--                <hr class="mb-0 mt-1"/>-->
-<!--                <small :class="{-->
-<!--               'text-danger': element.elementStatus === 'FAILED',-->
-<!--              'text-warning': element.elementStatus === 'IN_PROGRESS',-->
-<!--              'text-muted': element.elementStatus === 'CLOSED',-->
-<!--              'text-success': element.elementStatus === 'NEW',-->
-<!--              }">{{element.elementStatus}}</small>-->
-<!--                <hr class="mt-0 mb-1"/>-->
-<!--                <small class="text-muted">{{element.description}}</small>-->
-<!--              </div>-->
-<!--            </b-list-group-item>-->
-<!--&lt;!&ndash;            <b-list-group-item @click="addElement(board)" href="#">&ndash;&gt;-->
-<!--&lt;!&ndash;              <b-icon-plus></b-icon-plus> Add element&ndash;&gt;-->
-<!--&lt;!&ndash;            </b-list-group-item>&ndash;&gt;-->
-<!--          </b-list-group>-->
 
 
           <div class="d-flex justify-content-center mt-3">
@@ -159,6 +153,13 @@
             <b-button type="submit" variant="primary"><b-icon-check /> Save</b-button>
           </div>
         </b-form>
+    </b-modal>
+
+    <b-modal ref="friendAddOptionModal" hide-footer title="Choose option to add a friend">
+      <div class="d-flex justify-content-evenly align-items-center">
+        <b-btn type="primary" @click="openAddUserToBoardByID()"><b-icon-plus></b-icon-plus> Add friend by ID</b-btn>
+        <b-btn type="primary" @click="openAddUserToBoardBySearch()"><b-icon-plus></b-icon-plus> Search friends</b-btn>
+      </div>
     </b-modal>
 
     <b-modal ref="userAddToBoardByIDModal" hide-footer title="Adding new user by ID to the board">
@@ -182,6 +183,13 @@
         </div>
       </b-form>
     </b-modal>
+
+    <search-users
+        ref="userAddToBoardBySearchModal"
+        title="Find friends"
+        :exclude="boardUsers"
+        v-on:selected="onSearchCompleted"
+    />
 
   </div>
 </template>
@@ -217,7 +225,8 @@ export default {
           status: 'NEW',
           description: '',
           board: 0,
-          userChangeId: 0
+          userChangeModel: {},
+          elementHistoryModel: []
         },
         board: {
           id: 0,
@@ -258,11 +267,20 @@ export default {
     closeBoard() {
       this.$refs.boardModal.hide();
     },
+    openAddUserToBoardBySearch() {
+      this.$refs.userAddToBoardBySearchModal.open();
+    },
     openAddUserToBoardByID() {
       this.$refs.userAddToBoardByIDModal.show();
     },
     closeAddUserToBoardByID() {
       this.$refs.userAddToBoardByIDModal.hide();
+    },
+    openAddOptionFriend() {
+      this.$refs.friendAddOptionModal.show();
+    },
+    closeAddOptionFriend() {
+      this.$refs.friendAddOptionModal.hide();
     },
     deleteUserFromBoard(boardID, userID) {
 
@@ -279,7 +297,7 @@ export default {
       fetch(`http://localhost:8081/deleteUserFromBoard/${boardID}/${userID}`, {
         method: 'DELETE',
       })
-          .then(r => r.json())
+          .then(r => r.text())
           .then((response) => {
         if (response.error) {
           alert('Can\'t delete user!');
@@ -343,7 +361,7 @@ export default {
           })
     },
     addUserToABoard(userID, boardID) {
-      alert(userID+ " -- " +boardID)
+      //alert(userID+ " -- " +boardID)
       fetch(`http://localhost:8081/addUserToABoard/${userID}/${boardID}`, {
         method: 'POST',
         headers: {
@@ -362,6 +380,7 @@ export default {
 
             console.log(userJson)
             this.closeAddUserToBoardByID();
+            this.closeAddOptionFriend();
           })
     },
     findUsersOfABoard(boardID) {

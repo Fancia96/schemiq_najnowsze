@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-public class MessageModel {
+public class ElementMessageModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,24 +18,17 @@ public class MessageModel {
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
 
-    @ManyToOne
-    @JsonIgnoreProperties(value = { "listOfMessagesFrom", "listOfMessagesTo", "listOfFriends", "listOfFriendsTwo"  }, allowSetters=true)
-    private UserModel personFrom;
+    private String userMessageModel;
 
-    @ManyToOne
-    @JsonIgnoreProperties(value = { "listOfMessagesFrom", "listOfMessagesTo", "listOfFriends", "listOfFriendsTwo"  }, allowSetters=true)
-    private UserModel personTo;
+    public ElementMessageModel() {}
 
-    public MessageModel() {}
-
-    public MessageModel(String msg){
+    public ElementMessageModel(String msg){
         this.msg = msg;
         this.date = new Date();
     }
 
-    public MessageModel(UserModel personFrom, UserModel personTo, String msg){
-        this.personFrom = personFrom;
-        this.personTo = personTo;
+    public ElementMessageModel(String userMessageModel, String msg){
+        this.userMessageModel = userMessageModel;
         this.msg = msg;
         this.date = new Date() ;
     }
@@ -64,22 +57,13 @@ public class MessageModel {
         return id;
     }
 
-    public UserModel getPersonFrom() {
-        return personFrom;
+    public String getUserMessageModel() {
+        return userMessageModel;
     }
 
-    public void setPersonFrom(UserModel personFrom) {
-        this.personFrom = personFrom;
+    public void setUserMessageModel(String userMessageModel) {
+        this.userMessageModel = userMessageModel;
     }
-
-    public UserModel getPersonTo() {
-        return personTo;
-    }
-
-    public void setPersonTo(UserModel personTo) {
-        this.personTo = personTo;
-    }
-
 }
 /**
  *

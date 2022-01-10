@@ -3,10 +3,9 @@ package project.schemiq.Service;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 import project.schemiq.SchemiqApplication;
-import project.schemiq.model.BoardModel;
-import project.schemiq.model.ElementModel;
-import project.schemiq.model.UserModel;
+import project.schemiq.model.*;
 import project.schemiq.repository.BoardRepository;
+import project.schemiq.repository.ElementHistoryRepository;
 import project.schemiq.repository.ElementRepository;
 import project.schemiq.repository.UserRepository;
 
@@ -20,6 +19,7 @@ public class ElementService {
     private static ElementRepository elementRepository;
     private static BoardRepository boardRepository;
     private static UserRepository userRepository;
+    private static ElementHistoryRepository elementHistoryRepository;
 
     public ElementModel createElement(ElementModel elementModel, Long boardID, Long userID) {
 
@@ -34,6 +34,20 @@ public class ElementService {
                 elementUserModel.setAddChangeTime(new Date());
                 elementUserModel.setBoardModel(boardModel.get());
 
+                ElementHistoryModel elementHistoryUserModel = new ElementHistoryModel(
+                        elementUserModel.getName(),
+                        elementUserModel.getDescription(),
+                        elementUserModel.getElementStatus(),
+                        elementUserModel.getAddChangeTime(),
+                        getUserForHistory(elementUserModel.getUserChangeModel()), elementUserModel
+                );
+                elementRepository.save(elementUserModel);
+
+                elementHistoryRepository.save(elementHistoryUserModel);
+                elementUserModel.getElementHistoryModel().add(elementHistoryUserModel);
+
+                elementRepository.save(elementUserModel);
+
                 return elementRepository.save(elementUserModel);
             }
             throw new ObjectNotFoundException(UserService.class, SchemiqApplication.userNotFound);
@@ -42,6 +56,14 @@ public class ElementService {
             throw new ObjectNotFoundException(UserService.class, SchemiqApplication.boardNotFound);
         }
 
+    }
+
+    private String getUserForHistory(UserModel userModel){
+
+            return userModel.getId() + " | " +
+                    userModel.getName() + " | " +
+                    userModel.getFirstName() + " | " +
+                    userModel.getLastName();
     }
 
     public List<ElementModel> findBoardElementsByID(BoardModel boardModel){
@@ -67,17 +89,18 @@ public class ElementService {
         elementRepository.deleteAll();
     }
 
-    public ElementService(ElementRepository elementRepository, BoardRepository boardRepository, UserRepository userRepository){
+    public ElementService(ElementRepository elementRepository, BoardRepository boardRepository, UserRepository userRepository, ElementHistoryRepository elementHistoryRepository){
         this.elementRepository = elementRepository;
         this.boardRepository = boardRepository;
         this.userRepository = userRepository;
+        this.elementHistoryRepository = elementHistoryRepository;
     }
 
     public void deleteElementById(Long ID){
         elementRepository.deleteById(ID);
     }
 
-    public static ElementModel updateElementByElementModel(ElementModel elementModel, Long elementID, Long userID) {
+    public ElementModel updateElementByElementModel(ElementModel elementModel, Long elementID, Long userID) {
         Optional<ElementModel> element = elementRepository.findById(elementID);
         if(element.isPresent()){
             Optional<UserModel> userModel = userRepository.findById(userID);
@@ -89,6 +112,18 @@ public class ElementService {
                 new_element.setElementStatus(elementModel.getElementStatus());
                 new_element.setUserChangeModel(userModel.get());
                 new_element.setAddChangeTime(new Date());
+
+                ElementHistoryModel elementHistoryUserModel = new ElementHistoryModel(
+                        new_element.getName(),
+                        new_element.getDescription(),
+                        new_element.getElementStatus(),
+                        new_element.getAddChangeTime(),
+                        getUserForHistory(new_element.getUserChangeModel()),
+                        new_element
+                );
+
+                elementHistoryRepository.save(elementHistoryUserModel);
+                new_element.getElementHistoryModel().add(elementHistoryUserModel);
 
                 return elementRepository.save(new_element);
             }

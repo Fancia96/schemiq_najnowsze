@@ -11,6 +11,7 @@ import project.schemiq.repository.BoardRepository;
 import project.schemiq.repository.ElementRepository;
 import project.schemiq.repository.UserRepository;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
