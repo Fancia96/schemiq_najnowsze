@@ -48,8 +48,8 @@
               </b-btn>
           </div>
         </div>
-<h1>
-</h1>
+<h3>
+</h3>
       </b-form>
       <div class="d-flex justify-content-center mt-3">
         <b-button v-if="edit.friend.id" variant="danger" style="margin-right: 1em;" @click="deleteFriend(edit.friend)">
