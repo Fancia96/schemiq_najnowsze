@@ -48,7 +48,7 @@ public class ElementService {
 
                 elementRepository.save(elementUserModel);
 
-                return elementRepository.save(elementUserModel);
+                return elementUserModel;
             }
             throw new ObjectNotFoundException(UserService.class, SchemiqApplication.userNotFound);
         }
@@ -97,6 +97,7 @@ public class ElementService {
     }
 
     public void deleteElementById(Long ID){
+        elementHistoryRepository.deleteElementHistory(ID);
         elementRepository.deleteById(ID);
     }
 

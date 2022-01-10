@@ -8,6 +8,7 @@ import project.schemiq.model.BoardModel;
 import project.schemiq.model.ElementModel;
 import project.schemiq.model.UserModel;
 import project.schemiq.repository.BoardRepository;
+import project.schemiq.repository.ElementHistoryRepository;
 import project.schemiq.repository.ElementRepository;
 import project.schemiq.repository.UserRepository;
 
@@ -22,6 +23,7 @@ public class BoardService {
 
     private BoardRepository boardRepository;
     private ElementRepository elementRepository;
+    private ElementHistoryRepository elementHistoryRepository;
     private UserRepository userRepository;
 
     public BoardModel createBoard(BoardModel boardModel) {
@@ -110,6 +112,7 @@ public class BoardService {
             BoardModel existingBoard = board.get();
 
             for(ElementModel element : existingBoard.getElementModelList()){
+                elementHistoryRepository.deleteElementHistory(element.getId());
                 elementRepository.deleteById(element.getId());
             }
             boardRepository.deleteBoardUsers(existingBoard.getId());
@@ -136,10 +139,11 @@ public class BoardService {
 //        boardRepository.deleteAll();
 //    }
 
-    public BoardService(BoardRepository boardRepository, UserRepository userRepository,ElementRepository elementRepository){
+    public BoardService(BoardRepository boardRepository, UserRepository userRepository, ElementRepository elementRepository, ElementHistoryRepository elementHistoryRepository){
         this.boardRepository = boardRepository;
         this.userRepository = userRepository;
         this.elementRepository = elementRepository;
+        this.elementHistoryRepository = elementHistoryRepository;
     }
 
 //    public BoardModel findOne(BoardModel boardModel) {

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="height: 100%; width: 100%;">
     <div id="boards" class="mt-5 py-3">
       <div class="board d-flex justify-content-center align-items-center">
         <b-btn type="primary" @click="openBoard(template.board)"><b-icon-plus></b-icon-plus> Add board</b-btn>
@@ -196,6 +196,8 @@
 <style scoped>
   #boards {
     width: 100%;
+    max-width: 100%;
+    height: 100%;
     display: flex;
     flex-wrap: nowrap;
     flex-direction: row;
@@ -205,13 +207,15 @@
   .board {
     min-width: 25%;
     width: 25%;
-    max-height: calc(100vh - 200px);
+    max-height: 100%;
     overflow-y: auto;
   }
 </style>
 <script>
+import SearchUsers from '@/components/search_users'
 export default {
   name: "dashboard",
+  components: {SearchUsers},
   data() {
     return {
       addThisUserIDToBoard: 0,
@@ -299,9 +303,14 @@ export default {
       })
           .then(r => r.text())
           .then((response) => {
-        if (response.error) {
-          alert('Can\'t delete user!');
-          return;
+            if (response && response.length > 0) {
+              try {
+                response = JSON.parse(response)
+                if (response.error) {
+                  alert('Can\'t delete user!');
+                  return;
+                }
+              } catch (e) {console.error(e)}
         }
         this.boardUsers.splice(this.boardUsers.findIndex(bu => bu.id === userID), 1);
       })
@@ -403,8 +412,10 @@ export default {
 
             console.log(usersJson)
           })
+    },
+    onSearchCompleted(user) {
+      this.addUserToABoard(user.id, this.edit.board.id);
     }
-
     // findUserById(userID) {
     //
     //   fetch(`http://localhost:8081/findUserByID/${userID}`)

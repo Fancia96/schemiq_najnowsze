@@ -14,7 +14,7 @@
           </b-list-group>
         </div>
       </div>
-      <div class="flex-grow-1" style="height:100%;">
+      <div class="flex-grow-1" style="height:100vh;">
         <b-navbar toggleable="lg" type="light" variant="light" class="py-4">
           <b-container fluid>
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
@@ -44,7 +44,7 @@
             </b-collapse>
           </b-container>
         </b-navbar>
-        <b-container fluid>
+        <b-container fluid style="height: calc(100vh - 150px)">
           <router-view></router-view>
         </b-container>
       </div>

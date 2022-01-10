@@ -116,15 +116,22 @@
         </div>
       </b-form>
     </b-modal>
-
+    <search-users
+        ref="searchFriendsPanel"
+        title="Find friends"
+        :exclude="friends"
+        v-on:selected="onSearchCompleted"
+    />
   </div>
 </template>
 <style scoped>
 
 </style>
 <script>
+import SearchUsers from "@/components/search_users";
 export default {
   name: "friends",
+  components: {SearchUsers},
   data() {
     return {
       addFriendByID: 0,
@@ -177,7 +184,7 @@ export default {
       this.$refs.friendAddByIDModal.hide();
     },
     openAddFriendBySearch() {
-      this.$refs.friendAddBySearchModal.show();
+      this.$refs.searchFriendsPanel.open();
     },
     closeAddFriendBySearch() {
       this.$refs.friendAddBySearchModal.hide();
@@ -233,6 +240,9 @@ export default {
       });
 
     },
+    onSearchCompleted(user) {
+      this.addFriend(user.id);
+    }
   },
   mounted(){
     fetch(`http://localhost:8081/findFriendsForID/${this.$root.user.id}`)
