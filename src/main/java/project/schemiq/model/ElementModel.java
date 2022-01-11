@@ -20,6 +20,9 @@ public class ElementModel {
     @OneToMany(mappedBy = "elementModel")
     private Set<ElementHistoryModel> elementHistoryModel = new HashSet<ElementHistoryModel>();
 
+    @OneToMany(mappedBy = "elementModel")
+    private Set<ElementMessageModel> elementMessageModel = new HashSet<ElementMessageModel>();
+
     @ManyToOne
     @JsonIgnore
     private BoardModel boardModel;
@@ -115,5 +118,9 @@ public class ElementModel {
 
     public void setElementHistoryModel(Set<ElementHistoryModel> elementHistoryModel) {
         this.elementHistoryModel = elementHistoryModel;
+    }
+
+    public Set<ElementMessageModel> getElementMessageModel() {
+        return elementMessageModel;
     }
 }

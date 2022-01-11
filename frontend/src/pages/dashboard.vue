@@ -33,7 +33,6 @@
                 Last edit:
                 <span>{{element.userChangeModel ? element.userChangeModel.name : ''}}</span>
               </small>
-
             </div>
           </b-list-group-item>
           <b-list-group-item @click="addElement(board)" href="#">
@@ -268,7 +267,8 @@ export default {
           description: '',
           board: 0,
           userChangeModel: {},
-          elementHistoryModel: []
+          elementHistoryModel: [],
+          elementMessageModel: []
         },
         board: {
           id: 0,
@@ -278,11 +278,35 @@ export default {
       },
       edit: {
         board: {},
-        element: {}
+        element: {},
+        message: ''
       }
     }
   },
   methods: {
+    sendMessage(elementId) {
+
+      fetch(`http://localhost:8081/sendMessageUnderElement/${elementId}/${this.$root.user.id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({msg: this.edit.message})
+      })
+          .then(r => r.json())
+          .then(msg => {
+            this.edit.element.elementMessageModel.push(msg);
+            this.edit.message = '';
+          })
+          .catch(e => console.error(e))
+    },
+    deleteMessage(message) {
+      fetch(`http://localhost:8081/deleteElementMessageByID/${message.id}`, {
+        method: 'DELETE',
+      }).then(() => {
+        this.edit.element.elementMessageModel.splice(this.edit.element.elementMessageModel.findIndex((m) => m.id === message.id), 1);
+      })
+    },
     openBoard(board) {
       this.edit.board = {...board};
 
