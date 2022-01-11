@@ -29,9 +29,9 @@
               <small class="text-muted">{{element.description}}</small>
               <hr class="mt-0 mb-1"/>
               <small class="text-muted" v-if="element.userChangeModel">
-                <b-avatar variant="primary" class="mr-3" :text="element.userChangeModel.name.charAt(0).toUpperCase()"></b-avatar>
+<!--                userChangeModel<b-avatar variant="primary" class="mr-3" :text="element.userChangeModel.name.charAt(0).toUpperCase()"></b-avatar>-->
+                Last edit:
                 <span>{{element.userChangeModel ? element.userChangeModel.name : ''}}</span>
-
               </small>
 
             </div>
@@ -85,21 +85,59 @@
           </b-form-select>
         </b-form-group>
 
-        <div>
-        <b-button class="my-2" v-b-toggle.collapse-1 variant="primary">History</b-button>
-        <b-collapse id="collapse-1" class="mt-2">
-          <b-list-group ref="chatbox" style="max-height: 50vh; overflow-y: auto;">
-            <b-list-group-item v-for="(elementHistory, idx) in edit.element.elementHistoryModel" :key="idx">
-              <div class="d-flex align-items-center justify-content-between" style="overflow: hidden;">
-                <small class="text-muted" style="overflow: hidden; word-break: break-all; text-overflow: ellipsis;">Name: {{elementHistory.name}}</small>
-                <small class="text-muted">Element status: {{elementHistory.elementStatus}}</small>
-              </div>
-              <div class="text-muted" style="overflow: hidden; word-break: break-all; text-overflow: ellipsis;">Description: {{elementHistory.description}}</div>
-              <div class="text-muted">Change time: {{elementHistory.addChangeTime}}</div>
-              <div class="text-muted">Change user: {{elementHistory.userChangeModel}}</div>
-            </b-list-group-item>
-          </b-list-group>
-        </b-collapse>
+        <div class="d-flex justify-content-center align-items-center">
+          <div>
+            <b-tabs content-class="mt-3">
+              <b-tab title="Comments" active>
+                <b-list-group ref="chatbox" style="max-height: 50vh; overflow-y: auto;">
+                  <b-list-group-item v-for="(elementMessage, idx) in edit.element.elementMessageModel" :key="idx">
+                    <div class="d-flex align-items-center justify-content-between" style="overflow: hidden;">
+                      <div>
+                        <small class="text-muted" style="overflow: hidden; word-break: break-all; text-overflow: ellipsis;">Name: {{elementMessage.userMessageModel}}</small><br/>
+                        <small class="text-muted">Date: {{elementMessage.date}}</small>
+                      </div>
+                      <b-button v-if="$root.user.name === elementMessage.userMessageModel" variant="danger" @click="deleteMessage(elementMessage)"> <b-icon-trash></b-icon-trash></b-button>
+                    </div>
+                    <div style="overflow: hidden; word-break: break-all; text-overflow: ellipsis;">{{elementMessage.msg}}</div>
+                  </b-list-group-item>
+                </b-list-group>
+                <b-form @submit="sendMessage(edit.element.id)">
+                  <div class="row">
+                    <div class="col-10">
+                      <b-form-group>
+                        <b-form-input
+                            v-model="edit.message"
+                            type="text"
+                            minlength="1"
+                            maxlength="100"
+                            placeholder="Enter message"
+                            required
+                        ></b-form-input>
+                      </b-form-group>
+                    </div>
+                    <div class="col-2">
+                      <b-btn variant="outline-primary" type="submit">
+                        <b-icon-arrow-right-circle />
+                      </b-btn>
+                    </div>
+                  </div>
+                </b-form>
+              </b-tab>
+              <b-tab title="History">
+                <b-list-group ref="chatbox" style="max-height: 50vh; overflow-y: auto;">
+                  <b-list-group-item v-for="(elementHistory, idx) in edit.element.elementHistoryModel" :key="idx">
+                    <div class="d-flex align-items-center justify-content-between" style="overflow: hidden;">
+                      <small class="text-muted" style="overflow: hidden; word-break: break-all; text-overflow: ellipsis;">Name: {{elementHistory.name}}</small>
+                      <small class="text-muted">Element status: {{elementHistory.elementStatus}}</small>
+                    </div>
+                    <div class="text-muted" style="overflow: hidden; word-break: break-all; text-overflow: ellipsis;">Description: {{elementHistory.description}}</div>
+                    <div class="text-muted">Change time: {{elementHistory.addChangeTime}}</div>
+                    <div class="text-muted">Change user: {{elementHistory.userChangeModel}}</div>
+                  </b-list-group-item>
+                </b-list-group>
+              </b-tab>
+            </b-tabs>
+          </div>
         </div>
 
         <div class="d-flex justify-content-center mt-3">

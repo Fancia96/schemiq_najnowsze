@@ -98,6 +98,9 @@ public class ElementService {
 
     public void deleteElementById(Long ID){
         elementHistoryRepository.deleteElementHistory(ID);
+
+        elementRepository.deleteElementMessages(ID);
+
         elementRepository.deleteById(ID);
     }
 

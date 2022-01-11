@@ -20,6 +20,10 @@ public class ElementMessageModel {
 
     private String userMessageModel;
 
+    @JsonIgnore
+    @ManyToOne
+    private ElementModel elementModel;
+
     public ElementMessageModel() {}
 
     public ElementMessageModel(String msg){
@@ -63,6 +67,14 @@ public class ElementMessageModel {
 
     public void setUserMessageModel(String userMessageModel) {
         this.userMessageModel = userMessageModel;
+    }
+
+    public ElementModel getElementModel() {
+        return elementModel;
+    }
+
+    public void setElementModel(ElementModel elementModel) {
+        this.elementModel = elementModel;
     }
 }
 /**

@@ -21,7 +21,7 @@ public class MessageService {
     private FriendshipRepository friendshipModelRepository;
 
     public MessageModel sendMessageBetweenIDs (
-            Long userModelOneID, Long userModelTwoID, MessageModel MessageModel) throws ObjectNotFoundException {
+            Long userModelOneID, Long userModelTwoID, MessageModel messageModel) throws ObjectNotFoundException {
         //szukam obiektow osoby po id
         Optional<UserModel> userModelOne = userRepository.findById(userModelOneID);
         Optional<UserModel> userModelTwo = userRepository.findById(userModelTwoID);
@@ -34,7 +34,7 @@ public class MessageService {
                     userModelTwo.get(), userModelOne.get());
 
             if(findFriendshipModelOne.isPresent() && findFriendshipModelTwo.isPresent()){
-                String MessageModelEdited = correctMessage(MessageModel.getMsg());
+                String MessageModelEdited = correctMessage(messageModel.getMsg());
 
                 MessageModel MessageModelAdd = new MessageModel(
                         userModelOne.get(), userModelTwo.get(), MessageModelEdited);
