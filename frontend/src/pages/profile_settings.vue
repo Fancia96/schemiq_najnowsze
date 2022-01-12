@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>Creating an account</h2>
+    <h2>Editing an account</h2>
     <h5>Your personal ID : {{$root.user.id}}</h5>
 
     <b-form @submit="onSubmit">
@@ -73,11 +73,13 @@
         ></b-form-input>
       </b-form-group>
 
+
+      <b-button @click="deleteUser()" >Delete accounts</b-button>
       <b-button type="submit" variant="primary">Save changes</b-button>
 
-        <b-list-group-item @click="deleteUser()" href="#">
-          <b-icon-></b-icon-> Delete account
-        </b-list-group-item>
+<!--        <b-list-group-item @click="deleteUser()" href="#">-->
+<!--          <b-icon-></b-icon-> Delete account-->
+<!--        </b-list-group-item>-->
 
     </b-form>
 
