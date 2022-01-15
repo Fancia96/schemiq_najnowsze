@@ -1,5 +1,6 @@
 <template>
   <div style="height: 100%; width: 100%;">
+    <b-button variant="primary" style="position: absolute; bottom: 0; right: 0;" @click="addRandomTimeData">Add time data</b-button>
     <b-alert v-if="!!timeTracker.element" show class="text-left" >
       <div class="row align-items-center">
         <div class="col" style="text-align: left;">
@@ -352,7 +353,48 @@ export default {
     }
   },
   methods: {
+    async addRandomTimeData() {
+        let random = (min, max) => { // min and max included
+          return Math.floor(Math.random() * (max - min + 1) + min)
+        };
 
+        let dates = [];
+        let maxTimePerDay = 3600 * 7;
+        for (let i = 0; i < 5; i++) {
+          dates.push({
+            startedAt: new Date(2022, 0, 10 + i, 8, 0, 0),
+            totalTime: 0
+          })
+        }
+        for (let j = 0; j < dates.length; j++) {
+          let date = dates[j];
+          while (date.totalTime < maxTimePerDay) {
+            let board = this.boards[Math.floor(Math.random() * this.boards.length)];
+            if (board) {
+              let element = board.elementModelList[Math.floor(Math.random() * board.elementModelList.length)];
+              if (element) {
+                let time = random(600, maxTimePerDay / 2);
+                console.log({time: time, startedAt: date.startedAt.toISOString()});
+                let resp = await fetch(`http://localhost:8081/trackElementTime/${element.id}/${this.$root.user.id}`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({time: time, startedAt: date.startedAt.toISOString()})
+                });
+
+                let json = await resp.json();
+                element.activity.push(json);
+                date.startedAt.setTime(date.startedAt.getTime() + (time * 1000));
+                date.totalTime += time;
+              }
+            }
+          }
+
+        }
+      console.log(dates);
+
+    },
     startTimeTracker(element, boardId, date) {
       let callback = () => {
         this.timeTracker.board = boardId;

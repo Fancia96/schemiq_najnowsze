@@ -51,47 +51,22 @@ export default {
     }
   },
   mounted () {
-
-    let data;
-    try {
-      data = JSON.parse(sessionStorage.getItem('series'))
-    } catch (e) {
-      data = null
-    }
-
-    if (!data) {
-      fetch(`http://localhost:8081/activity/${this.$root.user.id}`)
-          .then(r => r.json())
-          .then(activities => {
-            let data = {name: `${this.$root.user.name}'s activity`, data: [0,0,0,0,0]};
-            activities.forEach((a) => {
-              let date = new Date(a.startedAt);
-              if (typeof data.data[date.getDay() - 1] !== "undefined") {
-                data.data[date.getDay() - 1] += a.time;
-              }
-            })
-            data.data.forEach((v, k) => {
-              v = Math.round(100 * v / 3600) / 100;
-              if (v < 1) {
-                v = this.random(1, 8);
-              }
-              data.data[k] = v;
-            })
-
-            this.config.series.push(data);
-            sessionStorage.setItem('series', JSON.stringify(data));
+    fetch(`http://localhost:8081/activity/${this.$root.user.id}`)
+        .then(r => r.json())
+        .then(activities => {
+          let data = {name: `${this.$root.user.name}'s activity`, data: [0,0,0,0,0]};
+          activities.forEach((a) => {
+            let date = new Date(a.startedAt);
+            if (typeof data.data[date.getDay() - 1] !== "undefined") {
+              data.data[date.getDay() - 1] += a.time;
+            }
           })
-    } else {
-      this.config.series.push(data);
-    }
-
+          data.data.forEach((v, k) => {
+            data.data[k] = Math.round(100 * v / 3600) / 100;
+          });
+          this.config.series.push(data);
+        })
   },
-  methods: {
-    random(min, max) { // min and max included
-      return Math.floor(Math.random() * (max - min + 1) + min)
-    }
-
-  }
 }
 </script>
 

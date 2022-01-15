@@ -24,6 +24,7 @@ public class ElementModel {
     private Set<ElementMessageModel> elementMessageModel = new HashSet<ElementMessageModel>();
 
     @OneToMany(mappedBy = "element")
+    @OrderBy("startedAt ASC")
     private Set<ElementActivityModel> activity = new HashSet<ElementActivityModel>();
 
     @ManyToOne

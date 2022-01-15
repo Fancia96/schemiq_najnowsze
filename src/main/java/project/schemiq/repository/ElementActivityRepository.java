@@ -12,6 +12,6 @@ import java.util.Optional;
 @Repository
 public interface ElementActivityRepository extends JpaRepository<ElementActivityModel, Long> {
 
-    @Query("SELECT ea FROM ElementActivity ea where ea.user = :userID ORDER BY ea.id ASC")
+    @Query("SELECT ea FROM ElementActivity ea where ea.user = :userID ORDER BY ea.startedAt ASC")
     Optional<List<ElementActivityModel>> findByUserID(UserModel userID);
 }
