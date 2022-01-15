@@ -4,6 +4,7 @@ import ProfileSettings from "@/pages/profile_settings";
 import Settings from "@/pages/settings";
 import Login from "@/pages/login";
 import Friends from "@/pages/friends";
+import Activity from "@/pages/activity";
 
 const routes = [
     { path: '/dashboard', component: Dashboard },
@@ -12,6 +13,7 @@ const routes = [
     { path: '/settings', component: Settings },
     { path: '/login', component: Login},
     { path: '/friends', component: Friends},
+    { path: '/activity', component: Activity},
 ]
 
 export default routes;

@@ -4,10 +4,7 @@ import org.hibernate.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 import project.schemiq.SchemiqApplication;
 import project.schemiq.model.*;
-import project.schemiq.repository.BoardRepository;
-import project.schemiq.repository.ElementHistoryRepository;
-import project.schemiq.repository.ElementRepository;
-import project.schemiq.repository.UserRepository;
+import project.schemiq.repository.*;
 
 import java.util.Date;
 import java.util.List;
@@ -20,6 +17,7 @@ public class ElementService {
     private static BoardRepository boardRepository;
     private static UserRepository userRepository;
     private static ElementHistoryRepository elementHistoryRepository;
+    private final ElementActivityRepository elementActivityRepository;
 
     public ElementModel createElement(ElementModel elementModel, Long boardID, Long userID) {
 
@@ -89,26 +87,50 @@ public class ElementService {
         elementRepository.deleteAll();
     }
 
-    public ElementService(ElementRepository elementRepository, BoardRepository boardRepository, UserRepository userRepository, ElementHistoryRepository elementHistoryRepository){
+    public ElementService(
+        ElementRepository elementRepository,
+        BoardRepository boardRepository,
+        UserRepository userRepository,
+        ElementHistoryRepository elementHistoryRepository,
+        ElementActivityRepository elementActivityRepository
+    ){
         this.elementRepository = elementRepository;
         this.boardRepository = boardRepository;
         this.userRepository = userRepository;
         this.elementHistoryRepository = elementHistoryRepository;
+        this.elementActivityRepository = elementActivityRepository;
     }
 
     public void deleteElementById(Long ID){
         elementHistoryRepository.deleteElementHistory(ID);
-
         elementRepository.deleteElementMessages(ID);
-
+        elementRepository.deleteElementActivity(ID);
         elementRepository.deleteById(ID);
+    }
+
+    public ElementActivityModel createActivity(Long elementId, Long userId, Date startedAt, Long time)
+    {
+        Optional<ElementModel> element = elementRepository.findById(elementId);
+        Optional<UserModel> user = userRepository.findById(userId);
+
+        if (element.isPresent() && user.isPresent()) {
+            ElementActivityModel activityModel = new ElementActivityModel(
+                element.get(),
+                user.get(),
+                startedAt,
+                time
+            );
+            elementActivityRepository.save(activityModel);
+            return activityModel;
+        }
+
+        throw new ObjectNotFoundException(UserService.class, SchemiqApplication.elementNotFound);
     }
 
     public ElementModel updateElementByElementModel(ElementModel elementModel, Long elementID, Long userID) {
         Optional<ElementModel> element = elementRepository.findById(elementID);
         if(element.isPresent()){
             Optional<UserModel> userModel = userRepository.findById(userID);
-
             if(userModel.isPresent()) {
                 ElementModel new_element = element.get();
                 new_element.setName(elementModel.getName());

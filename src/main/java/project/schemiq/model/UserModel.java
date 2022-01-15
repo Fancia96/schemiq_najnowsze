@@ -3,6 +3,8 @@ package project.schemiq.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -10,6 +12,8 @@ import java.util.List;
 import java.util.Set;
 
 @Entity(name = "user")
+@SQLDelete(sql = "UPDATE user SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 public class UserModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,10 +26,11 @@ public class UserModel {
     @Column(unique = true)
     private String name;
     private String password;
-
+    @JsonIgnore
+    private Boolean deleted = Boolean.FALSE;
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<BoardModel> boardModel = new HashSet<BoardModel>();
 
     public UserModel(Long id, String email, String firstName, String lastName, String name, String password) {

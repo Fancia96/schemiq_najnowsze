@@ -1,16 +1,20 @@
 package project.schemiq.controller;
 
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.schemiq.Service.BoardService;
 import project.schemiq.Service.ElementService;
-import project.schemiq.model.BoardModel;
-import project.schemiq.model.ElementModel;
-import project.schemiq.model.ElementStatus;
-import project.schemiq.model.UserModel;
+import project.schemiq.model.*;
 
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin
 @RestController
@@ -65,6 +69,18 @@ public class ElementController {
         ElementModel  editThisPerson = elementService.updateElementByElementModel(element, elementID, userID);
 
         return ResponseEntity.ok(editThisPerson);
+    }
+
+    @PostMapping("/trackElementTime/{elementID}/{userID}")
+    public ResponseEntity<ElementActivityModel> trackTime(
+        @PathVariable Long elementID,
+        @PathVariable Long userID,
+        @RequestBody Map<String, String> payload
+    ) {
+        Date startedAt = Date.from(Instant.from(OffsetDateTime.parse(payload.get("startedAt"), DateTimeFormatter.ISO_DATE_TIME)));
+        Long time = Long.parseLong(payload.get("time"));
+        ElementActivityModel activity = elementService.createActivity(elementID, userID, startedAt, time);
+        return ResponseEntity.ok(activity);
     }
 
     @PostMapping("/createElement/{boardID}/{userID}")

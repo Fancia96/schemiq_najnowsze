@@ -10,6 +10,7 @@
           <b-list-group>
             <b-list-group-item :to="'/dashboard'" :disabled="!$root.user"><b-icon-folder></b-icon-folder> Boards</b-list-group-item>
             <b-list-group-item :to="'/friends'" :disabled="!$root.user"><b-icon-diamond></b-icon-diamond> Friends</b-list-group-item>
+            <b-list-group-item :to="'/activity'" :disabled="!$root.user" ><b-icon-bar-chart-steps></b-icon-bar-chart-steps> Activity</b-list-group-item>
             <b-list-group-item :to="'/settings'" :disabled="true" ><b-icon-nut></b-icon-nut> Settings</b-list-group-item>
           </b-list-group>
         </div>

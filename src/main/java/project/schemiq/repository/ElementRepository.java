@@ -22,4 +22,9 @@ public interface ElementRepository extends JpaRepository<ElementModel, Long> {
     @Transactional
     @Query(value = "DELETE FROM element_message_model where element_model_id = :elementID ", nativeQuery = true)
     void deleteElementMessages(Long elementID);
+
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM element_activity where element_id = :elementID ", nativeQuery = true)
+    void deleteElementActivity(Long elementID);
 }

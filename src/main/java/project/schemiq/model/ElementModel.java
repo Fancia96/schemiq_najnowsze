@@ -23,6 +23,9 @@ public class ElementModel {
     @OneToMany(mappedBy = "elementModel")
     private Set<ElementMessageModel> elementMessageModel = new HashSet<ElementMessageModel>();
 
+    @OneToMany(mappedBy = "element")
+    private Set<ElementActivityModel> activity = new HashSet<ElementActivityModel>();
+
     @ManyToOne
     @JsonIgnore
     private BoardModel boardModel;
@@ -122,5 +125,9 @@ public class ElementModel {
 
     public Set<ElementMessageModel> getElementMessageModel() {
         return elementMessageModel;
+    }
+
+    public Set<ElementActivityModel> getActivity() {
+        return activity;
     }
 }

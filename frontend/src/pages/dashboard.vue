@@ -1,5 +1,26 @@
 <template>
   <div style="height: 100%; width: 100%;">
+    <b-alert v-if="!!timeTracker.element" show class="text-left" >
+      <div class="row align-items-center">
+        <div class="col" style="text-align: left;">
+          <h4 class="alert-heading">
+            Currently working on
+          </h4>
+          "{{ timeTracker.element.name }}"
+        </div>
+        <div class="col-auto">
+          <div class="h2 mb-0">
+            {{timer.hours}}:{{timer.minutes}}:{{timer.seconds}}
+          </div>
+        </div>
+        <div class="col-auto">
+          <b-button variant="danger" @click="stopTimeTracker()">
+            <b-icon-stop-circle></b-icon-stop-circle>
+          </b-button>
+        </div>
+      </div>
+    </b-alert>
+    <div v-else  style="width: 100%; height: 100px;"></div>
     <div id="boards" class="mt-5 py-3">
       <div class="board d-flex justify-content-center align-items-center">
         <b-btn type="primary" @click="openBoard(template.board)"><b-icon-plus></b-icon-plus> Add board</b-btn>
@@ -29,7 +50,6 @@
               <small class="text-muted">{{element.description}}</small>
               <hr class="mt-0 mb-1"/>
               <small class="text-muted" v-if="element.userChangeModel">
-<!--                userChangeModel<b-avatar variant="primary" class="mr-3" :text="element.userChangeModel.name.charAt(0).toUpperCase()"></b-avatar>-->
                 Last edit:
                 <span>{{element.userChangeModel ? element.userChangeModel.name : ''}}</span>
               </small>
@@ -67,24 +87,31 @@
               required
           ></b-form-textarea>
         </b-form-group>
-        <b-form-group
-            label="Element status:"
-            label-for="element-status"
-        >
-          <b-form-select
-              id="element-status"
-              v-model="edit.element.elementStatus"
-              :value="edit.element.elementStatus"
-              required
-          >
-            <option value="NEW">NEW</option>
-            <option value="IN_PROGRESS">IN_PROGRESS</option>
-            <option value="CLOSED">CLOSED</option>
-            <option value="FAILED">FAILED</option>
-          </b-form-select>
-        </b-form-group>
-
-        <div class="d-flex justify-content-center align-items-center">
+        <div class="row">
+          <div class="col">
+            <b-form-group
+                label="Element status:"
+                label-for="element-status"
+            >
+              <b-form-select
+                  id="element-status"
+                  v-model="edit.element.elementStatus"
+                  :value="edit.element.elementStatus"
+                  required
+              >
+                <option value="NEW">NEW</option>
+                <option value="IN_PROGRESS">IN_PROGRESS</option>
+                <option value="CLOSED">CLOSED</option>
+                <option value="FAILED">FAILED</option>
+              </b-form-select>
+            </b-form-group>
+          </div>
+          <div v-if="edit.element.id" class="col-auto">
+            <b-button v-if="!timeTracker.element || edit.element.id !== timeTracker.element.id" variant="info" class="mt-3" @click="startTimeTracker(edit.element, edit.element.board)">Track time</b-button>
+            <b-button v-else variant="danger" class="mt-3" @click="stopTimeTracker()">Stop track time</b-button>
+          </div>
+        </div>
+        <div v-if="edit.element.id" class="d-flex justify-content-center align-items-center">
           <div>
             <b-tabs content-class="mt-3">
               <b-tab title="Comments" active>
@@ -132,6 +159,17 @@
                     <div class="text-muted" style="overflow: hidden; word-break: break-all; text-overflow: ellipsis;">Description: {{elementHistory.description}}</div>
                     <div class="text-muted">Change time: {{elementHistory.addChangeTime}}</div>
                     <div class="text-muted">Change user: {{elementHistory.userChangeModel}}</div>
+                  </b-list-group-item>
+                </b-list-group>
+              </b-tab>
+              <b-tab title="Time tracking">
+                <div>Total group work time: {{ (Math.round(100 * edit.element.activity.reduce((c, a) => a.time + c, 0) / 3600) / 100).toFixed(2) }} hours</div>
+                <div>Your time: {{ (Math.round(100 * edit.element.activity.filter(a => a.user.id === $root.user.id).reduce((c, a) => a.time + c, 0) / 3600) / 100).toFixed(2) }} hours</div>
+                <b-list-group ref="chatbox" style="max-height: 50vh; overflow-y: auto;">
+                  <b-list-group-item v-for="activity in edit.element.activity" :key="activity.id">
+                    <div class="small text-muted" style="overflow: hidden; word-break: break-all; text-overflow: ellipsis;">Name: {{activity.user.name}}</div>
+                    <div class="small text-muted">Started at: {{(new Date(activity.startedAt)).toISOString()}}</div>
+                    <div class="small text-muted">Time: {{(Math.round(100 * activity.time / 60) / 100).toFixed(2)}} minutes</div>
                   </b-list-group-item>
                 </b-list-group>
               </b-tab>
@@ -234,7 +272,7 @@
   #boards {
     width: 100%;
     max-width: 100%;
-    height: 100%;
+    height: calc(100% - 100px);
     display: flex;
     flex-wrap: nowrap;
     flex-direction: row;
@@ -253,6 +291,22 @@ import SearchUsers from '@/components/search_users'
 export default {
   name: "dashboard",
   components: {SearchUsers},
+  computed: {
+    timer() {
+      if (!this.timeTracker.element) {
+        return {
+          hours: '00',
+          minutes: '00',
+          seconds: '00'
+        }
+      }
+      return {
+        hours: (Math.floor(this.timeTracker.timeElapsed / 3600) % 60).toString().padStart(2, '0'),
+        minutes: (Math.floor(this.timeTracker.timeElapsed / 60) % 60).toString().padStart(2, '0'),
+        seconds: (this.timeTracker.timeElapsed % 60).toString().padStart(2, '0'),
+      }
+    }
+  },
   data() {
     return {
       addThisUserIDToBoard: 0,
@@ -268,7 +322,8 @@ export default {
           board: 0,
           userChangeModel: {},
           elementHistoryModel: [],
-          elementMessageModel: []
+          elementMessageModel: [],
+          activity: []
         },
         board: {
           id: 0,
@@ -280,10 +335,87 @@ export default {
         board: {},
         element: {},
         message: ''
+      },
+      timeTracker: {
+        board: null,
+        element: null,
+        startedAt: null,
+        eventLoop: null,
+        timeElapsed: 0
       }
     }
   },
+  beforeDestroy() {
+    if (this.timeTracker.eventLoop) {
+      clearInterval(this.timeTracker.eventLoop);
+      this.timeTracker.eventLoop = null;
+    }
+  },
   methods: {
+
+    startTimeTracker(element, boardId, date) {
+      let callback = () => {
+        this.timeTracker.board = boardId;
+        this.timeTracker.element = element;
+        this.timeTracker.startedAt = date || new Date();
+        localStorage.setItem('time_tracker', JSON.stringify({
+          element: element.id,
+          board: boardId,
+          startedAt: this.timeTracker.startedAt.toISOString()
+        }))
+
+        this.timeTracker.eventLoop = setInterval(() => {
+          this.timeTracker.timeElapsed = Math.round(((new Date()).getTime() - this.timeTracker.startedAt.getTime()) / 1000)
+        }, 1000)
+      };
+
+      if (this.timeTracker.element) {
+        this.stopTimeTracker(callback);
+      } else {
+        callback();
+      }
+    },
+    resetTimeTracker() {
+      this.timeTracker.element = null;
+      this.timeTracker.startedAt = null;
+      this.timeTracker.board = null;
+      this.timeTracker.timeElapsed = 0;
+      if (this.timeTracker.eventLoop) {
+        clearInterval(this.timeTracker.eventLoop);
+        this.timeTracker.eventLoop = null;
+      }
+      localStorage.removeItem('time_tracker');
+    },
+    stopTimeTracker(cb) {
+      let elId = this.timeTracker.element.id;
+      let boardId = this.timeTracker.board;
+      let time = this.timeTracker.timeElapsed;
+      let startedAt = this.timeTracker.startedAt;
+
+      fetch(`http://localhost:8081/trackElementTime/${elId}/${this.$root.user.id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({time, startedAt})
+      })
+          .then(r => r.json())
+          .then(resp => {
+            let board = this.boards.find(b => b.id === boardId);
+            if (board) {
+              let element = board.elementModelList.find(e => e.id === elId);
+              if (element) {
+                element.activity.push(resp);
+              }
+            }
+            this.resetTimeTracker();
+            cb && cb();
+          })
+          .catch(() => {
+            this.resetTimeTracker();
+            cb && cb();
+          })
+    },
     sendMessage(elementId) {
 
       fetch(`http://localhost:8081/sendMessageUnderElement/${elementId}/${this.$root.user.id}`, {
@@ -319,6 +451,9 @@ export default {
       fetch(`http://localhost:8081/deleteElement/${element.id}`, {
         method: 'DELETE',
       }).then(() => {
+        if (element.id === this.timeTracker.element.id) {
+          this.resetTimeTracker();
+        }
         board.elementModelList.splice(board.elementModelList.findIndex((e) => e.id === element.id), 1);
         this.closeElement();
       })
@@ -400,6 +535,9 @@ export default {
             } else {
               let idx = board.elementModelList.findIndex(e => e.id === element.id);
               this.$set(board.elementModelList, idx, elementJson);
+              if (this.timeTracker.element.id === elementJson.id) {
+                this.timeTracker.element = elementJson;
+              }
             }
             this.closeElement();
           })
@@ -408,6 +546,9 @@ export default {
       fetch(`http://localhost:8081/deleteBoard/${board.id}`, {
         method: 'DELETE',
       }).then(() => {
+        if (this.timeTracker.board === board.id) {
+          this.resetTimeTracker();
+        }
         this.boards.splice(this.boards.findIndex((b) => b.id === board.id), 1);
         this.closeBoard();
       })
@@ -449,7 +590,6 @@ export default {
             // }
             this.boardUsers.push(userJson);
 
-            console.log(userJson)
             this.closeAddUserToBoardByID();
             this.closeAddOptionFriend();
           })
@@ -471,8 +611,6 @@ export default {
             //   this.$set(this.boards, this.boards.findIndex(b => board.id === b.id), boardJson);
             // }
             this.boardUsers = usersJson;
-
-            console.log(usersJson)
           })
     },
     onSearchCompleted(user) {
@@ -493,10 +631,24 @@ export default {
         .then( response =>  response.json())
         .then( boardsFromServerJson => {
           this.boards = boardsFromServerJson;
-
-          //this.messages.push([msg.personFrom.name, msg.msg, msg.date]);
-
-          console.log(boardsFromServerJson)
+          try {
+            let timeTracker = JSON.parse(localStorage.getItem('time_tracker'));
+            if (timeTracker) {
+              let boardIdx = this.boards.findIndex(b => timeTracker.board === b.id);
+              if (boardIdx > -1) {
+                let elementIdx = this.boards[boardIdx].elementModelList.findIndex(e => timeTracker.element === e.id);
+                if (elementIdx > -1) {
+                  this.startTimeTracker(
+                      this.boards[boardIdx].elementModelList[elementIdx],
+                      this.boards[boardIdx].id,
+                      new Date(timeTracker.startedAt)
+                  );
+                }
+              }
+            }
+          } catch (e) {
+            //localStorage.removeItem('time_tracker');
+          }
         })
         .catch(exception => console.error(exception));
   }

@@ -113,6 +113,7 @@ public class BoardService {
             for(ElementModel element : existingBoard.getElementModelList()){
                 elementHistoryRepository.deleteElementHistory(element.getId());
                 elementRepository.deleteElementMessages(element.getId());
+                elementRepository.deleteElementActivity(element.getId());
                 elementRepository.deleteById(element.getId());
             }
             boardRepository.deleteBoardUsers(existingBoard.getId());

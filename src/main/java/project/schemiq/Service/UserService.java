@@ -31,17 +31,6 @@ public class UserService {
         userRepository.deleteById(ID);
     }
 
-//    private static boolean checkIfYouCanCreateUser(String name){
-//        for(String bad : SchemiqApplication.badWords){
-//            if(name.toLowerCase().contains(bad.toLowerCase())){
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
-
-
-
     public UserModel findUserByID(Long ID){
         Optional<UserModel> user = userRepository.findById(ID);
         if(user.isPresent()){
