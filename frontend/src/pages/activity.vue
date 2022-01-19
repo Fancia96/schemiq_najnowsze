@@ -13,6 +13,7 @@ export default {
         chart: {
           type: 'column'
         },
+        colors: ['#C56490'],
         title: {
           text: 'Weekly activity'
         },
@@ -34,7 +35,8 @@ export default {
         },
         tooltip: {
           headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-          pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+          pointFormat: '<tr><td style="color:rgb(197,100,144);'+//'{series.color};' +
+              'padding:0">{series.name}: </td>' +
               '<td style="padding:0"><b>{point.y:.1f} hours</b></td></tr>',
           footerFormat: '</table>',
           shared: true,

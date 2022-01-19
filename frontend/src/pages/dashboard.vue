@@ -1,27 +1,7 @@
 <template>
   <div style="height: 100%; width: 100%;">
     <b-button variant="primary" style="position: absolute; bottom: 0; right: 0;" @click="addRandomTimeData">Add time data</b-button>
-    <b-alert v-if="!!timeTracker.element" show class="text-left" >
-      <div class="row align-items-center">
-        <div class="col" style="text-align: left;">
-          <h4 class="alert-heading">
-            Currently working on
-          </h4>
-          "{{ timeTracker.element.name }}"
-        </div>
-        <div class="col-auto">
-          <div class="h2 mb-0">
-            {{timer.hours}}:{{timer.minutes}}:{{timer.seconds}}
-          </div>
-        </div>
-        <div class="col-auto">
-          <b-button variant="danger" @click="stopTimeTracker()">
-            <b-icon-stop-circle></b-icon-stop-circle>
-          </b-button>
-        </div>
-      </div>
-    </b-alert>
-    <div v-else  style="width: 100%; height: 100px;"></div>
+
     <div id="boards" class="mt-5 py-3">
       <div class="board d-flex justify-content-center align-items-center">
         <b-btn type="primary" @click="openBoard(template.board)"><b-icon-plus></b-icon-plus> Add board</b-btn>
@@ -62,6 +42,27 @@
         </b-list-group>
       </b-card>
     </div>
+    <b-alert v-if="!!timeTracker.element" show class="text-left" style="background-color: rgb(227, 171, 178);">
+      <div class="row align-items-center">
+        <div class="col" style="text-align: left;">
+          <h4 class="alert-heading">
+            Currently working on
+          </h4>
+          "{{ timeTracker.element.name }}"
+        </div>
+        <div class="col-auto">
+          <div class="h2 mb-0">
+            {{timer.hours}}:{{timer.minutes}}:{{timer.seconds}}
+          </div>
+        </div>
+        <div class="col-auto">
+          <b-button variant="danger" @click="stopTimeTracker()">
+            <b-icon-stop-circle></b-icon-stop-circle>
+          </b-button>
+        </div>
+      </div>
+    </b-alert>
+    <div v-else  style="width: 100%; height: 100px;"></div>
     <b-modal ref="elementModal" hide-footer :title="edit.element.name">
       <b-form @submit="saveElement(edit.element)">
         <b-form-group
@@ -493,7 +494,7 @@ export default {
       fetch(`http://localhost:8081/deleteElement/${element.id}`, {
         method: 'DELETE',
       }).then(() => {
-        if (element.id === this.timeTracker.element.id) {
+        if (this.timeTracker.element && element.id === this.timeTracker.element.id) {
           this.resetTimeTracker();
         }
         board.elementModelList.splice(board.elementModelList.findIndex((e) => e.id === element.id), 1);
@@ -577,7 +578,7 @@ export default {
             } else {
               let idx = board.elementModelList.findIndex(e => e.id === element.id);
               this.$set(board.elementModelList, idx, elementJson);
-              if (this.timeTracker.element.id === elementJson.id) {
+              if (this.timeTracker.element && this.timeTracker.element.id === elementJson.id) {
                 this.timeTracker.element = elementJson;
               }
             }

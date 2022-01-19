@@ -39,7 +39,7 @@
 <!--      </b-collapse>-->
 <!--    </b-navbar>-->
 
-      <img id="schemiq_logo" alt="Schemiq logo" src="./assets/schemiq.png" style="float: right;">
+      <img id="schemiq_logo" alt="Schemiq logo" src="src/assets/schemiq__.png" style="float: right;">
       </div>
 
 

@@ -19,10 +19,10 @@
         <b-navbar toggleable="lg" type="light" variant="light" class="py-4">
           <b-container fluid>
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-            <b-collapse id="nav-collapse" is-nav class=" justify-content-between">
-              <b-navbar-nav align="left">
-                <b-nav-item href="#">Link</b-nav-item>
-                <b-nav-item href="#" disabled>Disabled</b-nav-item>
+            <b-collapse id="nav-collapse" is-nav class=" justify-content-end">
+              <b-navbar-nav class="ml-auto">
+<!--                <b-nav-item href="#">Link</b-nav-item>-->
+<!--                <b-nav-item href="#" disabled>Disabled</b-nav-item>-->
                 <b-nav-item-dropdown right>
                   <!-- Using 'button-content' slot -->
                   <template #button-content>
@@ -96,5 +96,12 @@ export default {
   text-align: center;
   color: #2c3e50;
   background-color: lightgray;
+  /*--bs-light-rgb:102, 102, 102;*/
+
 }
+.list-group-item{
+  /*background-color: rgb(102,102,102) !important;*/
+}
+
+
 </style>
